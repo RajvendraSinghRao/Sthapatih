@@ -100,10 +100,10 @@
 <script>
 const form = document.getElementById("buyForm");
 
-// Fill product and price from URL parameters
+// Decode URL parameters
 const params = new URLSearchParams(window.location.search);
-document.getElementById('product').value = params.get('product') || '';
-document.getElementById('price').value = params.get('price') || '';
+document.getElementById('product').value = decodeURIComponent(params.get('product') || '');
+document.getElementById('price').value = decodeURIComponent(params.get('price') || '');
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -122,7 +122,6 @@ form.addEventListener("submit", function(e) {
     return;
   }
 
-  // Send as URLSearchParams (works with e.parameter in Apps Script)
   const data = new URLSearchParams();
   data.append("Product", product);
   data.append("Price", price);
@@ -133,7 +132,7 @@ form.addEventListener("submit", function(e) {
   data.append("Delivery_Address", address);
   data.append("Quantity", quantity);
 
-  fetch("https://script.google.com/macros/s/AKfycbyRHyHmGiRQt0Tp5rBQTiHK4YnbczAIY-pKZYeQf84gkGzodMn3D9J1zQ4fFMVL4tb7/exec", { 
+  fetch("YOUR_APPS_SCRIPT_URL_HERE", { 
     method: "POST",
     body: data
   })
