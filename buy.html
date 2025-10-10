@@ -3,65 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Place Your Order - Build Shop</title>
+<title>Buy Product - Build Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* Reset & fonts */
+  * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: 'Roboto', sans-serif;
-    background: #f0f2f5;
-    margin: 0;
-    padding: 0;
+    background: linear-gradient(135deg, #f0f2f5, #dfe6e9);
+    min-height: 100vh;
+    overflow-x: hidden;
     color: #2d3436;
   }
 
-  h2 {
-    text-align: center;
-    margin: 30px 0;
-    color: #0984e3;
-    font-size: 2rem;
-  }
+  /* Hamburger */
+  .hamburger { position: fixed; top: 20px; left: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; }
+  .hamburger:hover { transform: scale(1.2); }
 
+  /* Sidebar */
+  .sidebar { 
+    position: fixed; top:0; left:-280px; width:260px; height:100%; 
+    background: linear-gradient(180deg,#0984e3,#74b9ff); color:#fff; padding:80px 20px 20px 20px; 
+    transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; border-radius:0 15px 15px 0;
+  }
+  .sidebar h2 { margin-bottom:30px; font-weight:700; text-align:center; color:#ffeaa7; }
+  .sidebar button { 
+    padding:12px; margin-bottom:15px; background:rgba(255,255,255,0.2); border:none; color:#fff; 
+    font-size:16px; cursor:pointer; border-radius:8px; font-weight:500; display:flex; align-items:center; 
+    justify-content:flex-start; gap:10px; transition:background 0.3s, transform 0.2s; 
+  }
+  .sidebar button:hover { background:rgba(255,255,255,0.35); transform:scale(1.02); }
+
+  /* Overlay */
+  .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); display:none; z-index:900; }
+
+  /* Page title */
+  h2 { text-align:center; margin:30px 0; color:#0984e3; font-size:2rem; }
+
+  /* Form */
   form {
     max-width: 650px;
     margin: 0 auto 50px auto;
-    background: #fff;
-    padding: 35px 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.95);
+    padding: 40px 35px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     position: relative;
+    backdrop-filter: blur(5px);
   }
 
-  .form-group {
-    position: relative;
-    margin-bottom: 20px;
-  }
-
+  .form-group { position: relative; margin-bottom: 20px; }
   label {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 14px;
+    left: 14px;
     font-weight: 500;
     color: #636e72;
     pointer-events: none;
     transition: 0.2s all;
-    background: #fff;
+    background: rgba(255,255,255,0.95);
     padding: 0 4px;
+    border-radius: 3px;
   }
 
   input, textarea {
     width: 100%;
-    padding: 14px 12px;
-    border-radius: 10px;
+    padding: 16px 14px;
+    border-radius: 12px;
     border: 1px solid #dfe6e9;
     font-size: 16px;
-    box-sizing: border-box;
     outline: none;
+    background: rgba(255,255,255,0.9);
   }
 
-  input:focus, textarea:focus {
-    border-color: #0984e3;
-    box-shadow: 0 0 5px rgba(9,132,227,0.3);
-  }
+  input:focus, textarea:focus { border-color: #0984e3; box-shadow:0 0 6px rgba(9,132,227,0.3); }
 
   input:focus + label, input:not(:placeholder-shown) + label,
   textarea:focus + label, textarea:not(:placeholder-shown) + label {
@@ -71,28 +86,22 @@
     color: #0984e3;
   }
 
-  textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+  textarea { min-height: 100px; resize: vertical; }
 
   button {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     background: #00b894;
     color: #fff;
     font-size: 16px;
     font-weight: 700;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: 0.3s all;
   }
 
-  button:hover {
-    background: #019875;
-    transform: scale(1.02);
-  }
+  button:hover { background: #019875; transform: scale(1.02); }
 
   /* Toast */
   .toast {
@@ -103,17 +112,14 @@
     background: #00b894;
     color: #fff;
     padding: 12px 25px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 500;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s;
-    z-index: 2000;
+    z-index:2000;
   }
-
-  .toast.show {
-    opacity: 1;
-  }
+  .toast.show { opacity: 1; }
 
   /* Responsive */
   @media(max-width:500px){
@@ -122,6 +128,16 @@
 </style>
 </head>
 <body>
+
+<div class="hamburger" onclick="openSidebar()">&#9776;</div>
+
+<div class="sidebar" id="sidebar">
+  <h2>Build Shop</h2>
+  <button onclick="goHome()">🏠 Home</button>
+  <button onclick="goSell()">🛒 Sell Product</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <h2>Place Your Order</h2>
 
@@ -164,6 +180,14 @@
 <div class="toast" id="toast">Order submitted successfully!</div>
 
 <script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+function openSidebar(){ sidebar.style.left = "0"; overlay.style.display="block"; }
+function closeSidebar(){ sidebar.style.left = "-280px"; overlay.style.display="none"; }
+function goHome(){ window.location.href="index.html"; }
+function goSell(){ window.location.href="index.html#sell"; }
+
 const form = document.getElementById("buyForm");
 const toast = document.getElementById("toast");
 const params = new URLSearchParams(window.location.search);
@@ -203,7 +227,6 @@ Address: ${address}`;
   const phoneNumber = seller.startsWith("91") ? seller : "91"+seller;
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-  // Show toast
   toast.classList.add("show");
   setTimeout(()=> toast.classList.remove("show"),3000);
 
