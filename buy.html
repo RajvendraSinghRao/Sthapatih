@@ -108,7 +108,6 @@ document.getElementById('price').value = params.get('price') || '';
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
-  // Get values
   const product = document.getElementById("product").value.trim();
   const price = document.getElementById("price").value.trim();
   const buyerName = document.getElementById("buyerName").value.trim();
@@ -118,27 +117,25 @@ form.addEventListener("submit", function(e) {
   const address = document.getElementById("buyerAddress").value.trim();
   const quantity = document.getElementById("buyerQty").value.trim();
 
-  // Validate required fields
   if (!product || !price || !buyerName || !contact || !email || !address || !quantity) {
     alert("Please fill in all required fields.");
     return;
   }
 
-  // Create FormData
-  const formData = new FormData();
-  formData.append("Product", product);
-  formData.append("Price", price);
-  formData.append("Buyer_Name", buyerName);
-  formData.append("Contact", contact);
-  formData.append("Alternate_Contact", altContact);
-  formData.append("Email", email);
-  formData.append("Delivery_Address", address);
-  formData.append("Quantity", quantity);
+  // Send as URLSearchParams (works with e.parameter in Apps Script)
+  const data = new URLSearchParams();
+  data.append("Product", product);
+  data.append("Price", price);
+  data.append("Buyer_Name", buyerName);
+  data.append("Contact", contact);
+  data.append("Alternate_Contact", altContact);
+  data.append("Email", email);
+  data.append("Delivery_Address", address);
+  data.append("Quantity", quantity);
 
-  // Send to Apps Script
-  fetch("https://script.google.com/macros/s/AKfycbyRHyHmGiRQt0Tp5rBQTiHK4YnbczAIY-pKZYeQf84gkGzodMn3D9J1zQ4fFMVL4tb7/exec", { // Replace with your deployed Apps Script URL
+  fetch("https://script.google.com/macros/s/AKfycbyRHyHmGiRQt0Tp5rBQTiHK4YnbczAIY-pKZYeQf84gkGzodMn3D9J1zQ4fFMVL4tb7/exec", { 
     method: "POST",
-    body: formData
+    body: data
   })
   .then(response => response.text())
   .then(text => {
@@ -155,6 +152,7 @@ form.addEventListener("submit", function(e) {
     console.error(error);
   });
 });
+
 </script>
 
 </body>
