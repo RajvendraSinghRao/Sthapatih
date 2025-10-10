@@ -15,7 +15,7 @@
     left: 15px;
     font-size: 30px;
     cursor: pointer;
-    z-index: 1002; /* higher than sidebar */
+    z-index: 1002;
     color: #2d3436;
   }
 
@@ -28,7 +28,7 @@
     height: 100%;
     background: #2d3436;
     color: #fff;
-    padding: 80px 20px 20px 20px; /* Added top padding to move title below hamburger */
+    padding: 80px 20px 20px 20px;
     transition: left 0.3s;
     z-index: 1000;
     display: flex;
@@ -88,8 +88,10 @@
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s;
+    text-align: center;
   }
   .product-card:hover { transform: translateY(-5px); }
+  .product-card img { max-width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
   .product-card h3 { margin-bottom: 10px; color: #2d3436; }
   .product-card p { margin-bottom: 15px; color: #636e72; font-weight: bold; }
   .product-card button {
@@ -152,12 +154,12 @@ function openHome(){
   closeSidebar();
 }
 
-// Products
+// Products with images
 const products = [
-  { name: "Bricks", price: 5, unit: "per unit" },
-  { name: "Cement", price: 350, unit: "per bag" },
-  { name: "Sand", price: 50, unit: "per bag" },
-  { name: "Paint", price: 500, unit: "per liter" }
+  { name: "Bricks", price: 5, unit: "per unit", img: "https://i.imgur.com/8aFQkJ6.jpg" },
+  { name: "Cement", price: 350, unit: "per bag", img: "https://i.imgur.com/jt5eV9G.jpg" },
+  { name: "Sand", price: 50, unit: "per bag", img: "https://i.imgur.com/H4p6XvH.jpg" },
+  { name: "Paint", price: 500, unit: "per liter", img: "https://i.imgur.com/fCjVdpQ.jpg" }
 ];
 
 function displayProducts(){
@@ -166,8 +168,10 @@ function displayProducts(){
   products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
-    card.innerHTML = `<h3>${p.name}</h3><p>Price: ${p.price} ${p.unit}</p>
-    <button onclick="goToBuyerPage('${p.name}',${p.price})">Buy Now</button>`;
+    card.innerHTML = `<img src="${p.img}" alt="${p.name}">
+                      <h3>${p.name}</h3>
+                      <p>Price: ${p.price} ${p.unit}</p>
+                      <button onclick="goToBuyerPage('${p.name}',${p.price})">Buy Now</button>`;
     container.appendChild(card);
   });
 }
@@ -183,7 +187,7 @@ function showSellForm(){
   document.getElementById('mainContent').innerHTML=` 
     <h2>Sell Your Product</h2>
     <form id="sellForm">
-      <div><label>Category</label>
+      <div><label>Select Product</label>
         <select id="category" required>
           <option value="">Select</option>
           <option>Bricks</option>
@@ -192,9 +196,10 @@ function showSellForm(){
           <option>Stones</option>
           <option>Paint</option>
           <option>Gypsum</option>
+          <option>Other</option>
         </select>
       </div>
-      <div><label>Product Name</label><input type="text" id="productName" required></div>
+      <div id="otherProductDiv" style="display:none;"><label>Product Name</label><input type="text" id="productName"></div>
       <div><label>Price</label><input type="number" id="price" required></div>
       <div><label>Minimum Quantity</label><input type="number" id="minQty" required></div>
       <div><label>Delivery Charge per km</label><input type="number" id="deliveryCharge" required></div>
@@ -205,9 +210,51 @@ function showSellForm(){
       <button type="submit">Submit Product Details</button>
     </form>
   `;
-  document.getElementById('sellForm').addEventListener('submit',function(e){
+
+  const categorySelect = document.getElementById('category');
+  const otherDiv = document.getElementById('otherProductDiv');
+
+  categorySelect.addEventListener('change', function(){
+    if(this.value === "Other"){
+      otherDiv.style.display = "block";
+      document.getElementById('productName').required = true;
+    } else {
+      otherDiv.style.display = "none";
+      document.getElementById('productName').required = false;
+    }
+  });
+
+  document.getElementById('sellForm').addEventListener('submit', function(e){
     e.preventDefault();
-    alert("Seller details submitted. (Integrate WhatsApp or backend as needed)");
+
+    const category = document.getElementById('category').value;
+    let productName = category;
+    if(category === "Other"){
+      productName = document.getElementById('productName').value;
+    }
+
+    const price = document.getElementById('price').value;
+    const minQty = document.getElementById('minQty').value;
+    const deliveryCharge = document.getElementById('deliveryCharge').value;
+    const sellerName = document.getElementById('sellerName').value;
+    const sellerContact = document.getElementById('sellerContact').value;
+    const shopAddress = document.getElementById('shopAddress').value;
+    const additionalDetails = document.getElementById('additionalDetails').value;
+
+    const message = `New Product Submission:
+Product: ${productName}
+Price: ${price}
+Min Qty: ${minQty}
+Delivery Charge/km: ${deliveryCharge}
+Seller: ${sellerName}
+Contact: ${sellerContact}
+Address: ${shopAddress}
+Details: ${additionalDetails}`;
+
+    const phoneNumber = "917977523959"; // replace with your WhatsApp number in international format
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank"); // opens WhatsApp
   });
 }
 
@@ -215,4 +262,3 @@ displayProducts();
 </script>
 </body>
 </html>
-
