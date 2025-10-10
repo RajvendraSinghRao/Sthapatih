@@ -28,7 +28,7 @@ document.getElementById('buyForm').addEventListener('submit', e => {
     Quantity: document.getElementById('buyerQty').value
   };
 
-  fetch("YOUR_WEB_APP_URL_HERE", {
+  fetch("https://script.google.com/macros/s/AKfycbwDbqisu-fChK-GTWeN9vHN8wcu-H5zAQ4CdH_ZfXAxh_TWoxO33VgFytriIsW3sUIYIw/exec", {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify(data)
