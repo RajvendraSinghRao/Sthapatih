@@ -28,7 +28,7 @@ document.getElementById('buyForm').addEventListener('submit', e => {
     Quantity: document.getElementById('buyerQty').value
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbwDbqisu-fChK-GTWeN9vHN8wcu-H5zAQ4CdH_ZfXAxh_TWoxO33VgFytriIsW3sUIYIw/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbx44n5pBGiN26R2zgju2CmLnAD9WsdOkyL_pm6W0cyh7rGJVIwoVunUIRxl0EBKhBKu9A/exec", {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify(data)
