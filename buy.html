@@ -83,22 +83,22 @@
       Quantity: document.getElementById('buyerQty').value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbx44n5pBGiN26R2zgju2CmLnAD9WsdOkyL_pm6W0cyh7rGJVIwoVunUIRxl0EBKhBKu9A/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-      if(res.status === "success") {
-        alert("Order submitted successfully!");
-        window.location.href = "index.html"; // Redirect after submission
-      } else {
-        alert("Error: " + res.message);
-      }
-    })
-    .catch(err => alert("Error: " + err));
-  });
+      fetch("https://script.google.com/macros/s/AKfycbzcr15-Z6asjwVV-Lu9gfQR25VZso7Ocu5UbZN5qL5L30i4NVjhFEfck2G5AxPOaVSv0w/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(res => {
+  if(res.status === "success") {
+    alert("Order submitted successfully!");
+    window.location.href = "index.html";
+  } else {
+    alert("Error: " + res.message);
+  }
+})
+.catch(err => alert("Error: " + err));
+
 </script>
 
 </body>
