@@ -36,23 +36,35 @@ const params = new URLSearchParams(window.location.search);
 document.getElementById('product').value = params.get('product') || '';
 document.getElementById('price').value = params.get('price') || '';
 
+// Get user location
+let userLocation = { lat: '', lon: '' };
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position){
+    userLocation.lat = position.coords.latitude;
+    userLocation.lon = position.coords.longitude;
+  }, function(err){
+    console.warn("Geolocation error:", err);
+  });
+}
 
 document.getElementById('buyForm').addEventListener('submit', function(e){
   e.preventDefault();
 
   const buyerData = {
-    product: document.getElementById('product').value,
-    price: document.getElementById('price').value,
-    name: document.getElementById('buyerName').value,
-    contact: document.getElementById('buyerContact').value,
-    altContact: document.getElementById('buyerAltContact').value,
-    email: document.getElementById('buyerEmail').value,
-    address: document.getElementById('buyerAddress').value,
-    quantity: document.getElementById('buyerQty').value,
-    location: userLocation
+    Product: document.getElementById('product').value,
+    Price: document.getElementById('price').value,
+    Buyer_Name: document.getElementById('buyerName').value,
+    Contact: document.getElementById('buyerContact').value,
+    Alternate_Contact: document.getElementById('buyerAltContact').value,
+    Email: document.getElementById('buyerEmail').value,
+    Delivery_Address: document.getElementById('buyerAddress').value,
+    Quantity: document.getElementById('buyerQty').value,
+    Latitude: userLocation.lat,
+    Longitude: userLocation.lon,
+    Timestamp: new Date().toLocaleString()
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbx8yCpuUr9rVudRpAwUkuRPQ0zAqfbQh3PxFzLUjo3IRBbJrzOmIEWwtTNaS0wizJTE8Q/exec", {
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", { 
     method: "POST",
     body: JSON.stringify(buyerData),
     headers: {"Content-Type":"application/json"}
@@ -61,8 +73,7 @@ document.getElementById('buyForm').addEventListener('submit', function(e){
   .then(data => {
     if(data.status === "success"){
       alert("Order Submitted Successfully!");
-      document.getElementById('buyForm').reset();
-      window.location.href = "index.html"; // Redirect back to home
+      window.location.href = "index.html"; // back to home
     } else {
       alert("Error submitting order: " + data.message);
     }
@@ -70,6 +81,5 @@ document.getElementById('buyForm').addEventListener('submit', function(e){
   .catch(err => alert("Error: " + err));
 });
 </script>
-
 </body>
 </html>
