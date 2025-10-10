@@ -10,7 +10,7 @@
 body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7fa,#f0f2f5); color:#2d3436; overflow-x:hidden; transition: background 0.3s; }
 
 /* Hamburger */
-.hamburger { position: fixed; top: 20px; left: 40px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; }
+.hamburger { position: sticky; top: 20px; left: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; background:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
 .hamburger:hover { transform: scale(1.2); }
 
 /* Sidebar */
@@ -40,13 +40,14 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 .product-card:hover .hover-info { opacity:1; }
 
 /* Seller Form */
-form { background:#fff; padding:30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.15); max-width:650px; margin:30px auto; position:relative; }
-.form-group { position: relative; margin-bottom: 18px; }
-label { font-weight:500; display:block; margin-bottom:6px; color:#2d3436; }
-input, textarea, select { width:100%; padding:12px; border-radius:10px; border:1px solid #dfe6e9; font-size:1rem; transition:border 0.2s, box-shadow 0.2s; }
-input:focus, textarea:focus, select:focus { border-color:#0984e3; box-shadow:0 0 5px rgba(9,132,227,0.3); outline:none; }
-textarea { min-height:100px; resize:vertical; }
-button.submit-btn { background:#0984e3; color:#fff; padding:14px; font-weight:700; width:100%; border:none; border-radius:10px; cursor:pointer; font-size:1.1rem; transition:0.3s all; }
+form { background:#fff; padding:40px 30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.15); max-width:700px; margin:30px auto; position:relative; }
+.form-group { position: relative; margin-bottom: 20px; }
+label { font-weight:500; display:block; margin-bottom:6px; color:#0984e3; font-size:0.95rem; }
+input, textarea, select { width:100%; padding:14px 12px; border-radius:10px; border:1.5px solid #dfe6e9; font-size:1rem; transition:border 0.2s, box-shadow 0.2s, color 0.2s; color:#000; }
+input::placeholder, textarea::placeholder { color:#000; opacity:0.7; }
+input:focus, textarea:focus, select:focus { border-color:#0984e3; box-shadow:0 0 8px rgba(9,132,227,0.3); outline:none; color:#000; }
+textarea { min-height:120px; resize:vertical; }
+button.submit-btn { background:#0984e3; color:#fff; padding:16px; font-weight:700; width:100%; border:none; border-radius:10px; cursor:pointer; font-size:1.1rem; transition:0.3s all; }
 button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 #otherProductDiv { display:none; }
 
@@ -55,7 +56,7 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 .toast.show { opacity:1; }
 
 /* Responsive */
-@media(max-width:500px){ .main { padding:20px 10px; } .product-card img { height:150px; } .hamburger { left:20px; } }
+@media(max-width:500px){ .main { padding:20px 10px; } .product-card img { height:150px; } .hamburger { left:10px; } }
 </style>
 </head>
 <body>
@@ -78,13 +79,11 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 <div class="toast" id="toast">Message sent!</div>
 
 <script>
-// Sidebar
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
 function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='none'; }
 
-// Products Data
 const products=[
   { name:"Bricks", price:5, unit:"per unit", img:"https://i.imgur.com/8aFQkJ6.jpg", sellerNumber:"917977523959" },
   { name:"Cement", price:350, unit:"per bag", img:"https://i.imgur.com/jt5eV9G.jpg", sellerNumber:"919224626208" },
@@ -92,37 +91,31 @@ const products=[
   { name:"Paint", price:500, unit:"per liter", img:"https://i.imgur.com/fCjVdpQ.jpg", sellerNumber:"917977523962" }
 ];
 
-// Display Products
 function displayProducts(){
-  document.getElementById('mainContent').innerHTML=`<h2>Build Shop</h2><div class="products" id="productsContainer"></div>`;
+  closeSidebar();
+  document.getElementById('mainContent').innerHTML='<h2>Build Shop</h2><div class="products" id="productsContainer"></div>';
   const container=document.getElementById('productsContainer');
   products.forEach(p=>{
     const card=document.createElement('div');
     card.className='product-card';
-    card.innerHTML=`<img src="${p.img}" alt="${p.name}">
-                    <h3>${p.name}</h3>
-                    <p>Price: ${p.price} ${p.unit}</p>
-                    <button onclick="goToBuyerPage('${p.name}',${p.price},'${p.sellerNumber}')">Buy Now</button>
-                    <div class="hover-info">Seller: ${p.sellerNumber}</div>`;
+    card.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>Price: ${p.price} ${p.unit}</p><button onclick="goToBuyerPage('${p.name}',${p.price},'${p.sellerNumber}')">Buy Now</button><div class="hover-info">Seller: ${p.sellerNumber}</div>`;
     container.appendChild(card);
   });
 }
 
-// Redirect to Buyer Page
 function goToBuyerPage(name, price, sellerNumber){
-  window.location.href=`buy.html?product=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&seller=${sellerNumber}`;
+  window.location.href='buy.html?product='+encodeURIComponent(name)+'&price='+encodeURIComponent(price)+'&seller='+sellerNumber;
 }
 
-// Open Home
-function openHome(){ displayProducts(); closeSidebar(); }
+function openHome(){ displayProducts(); }
 
-// Seller Form
 function showSellForm(){
+  closeSidebar();
   document.getElementById('mainContent').innerHTML = `
     <h2>Sell Your Product</h2>
     <form id="sellForm">
       <div class="form-group">
-        <label>Select Product</label>
+        <label for="category">Select Product</label>
         <select id="category" required>
           <option value="">Select</option>
           <option>Bricks</option>
@@ -136,36 +129,36 @@ function showSellForm(){
         </select>
       </div>
       <div class="form-group" id="otherProductDiv">
-        <label>Product Name</label>
+        <label for="productName">Product Name</label>
         <input type="text" id="productName" placeholder="Enter product name">
       </div>
       <div class="form-group">
-        <label>Price</label>
-        <input type="number" id="price" required>
+        <label for="price">Price</label>
+        <input type="number" id="price" placeholder="Enter price" required>
       </div>
       <div class="form-group">
-        <label>Minimum Quantity</label>
-        <input type="number" id="minQty" required>
+        <label for="minQty">Minimum Quantity</label>
+        <input type="number" id="minQty" placeholder="Enter minimum quantity" required>
       </div>
       <div class="form-group">
-        <label>Delivery Charge per km</label>
-        <input type="number" id="deliveryCharge" required>
+        <label for="deliveryCharge">Delivery Charge per km</label>
+        <input type="number" id="deliveryCharge" placeholder="Enter delivery charge" required>
       </div>
       <div class="form-group">
-        <label>Seller Name</label>
-        <input type="text" id="sellerName" required>
+        <label for="sellerName">Seller Name</label>
+        <input type="text" id="sellerName" placeholder="Enter seller name" required>
       </div>
       <div class="form-group">
-        <label>Contact</label>
-        <input type="tel" id="sellerContact" value="7977523959" required>
+        <label for="sellerContact">Contact</label>
+        <input type="tel" id="sellerContact" value="7977523959" placeholder="Enter contact number" required>
       </div>
       <div class="form-group">
-        <label>Shop Address</label>
-        <textarea id="shopAddress" required></textarea>
+        <label for="shopAddress">Shop Address</label>
+        <textarea id="shopAddress" placeholder="Enter shop address" required></textarea>
       </div>
       <div class="form-group">
-        <label>Additional Details</label>
-        <textarea id="additionalDetails"></textarea>
+        <label for="additionalDetails">Additional Details</label>
+        <textarea id="additionalDetails" placeholder="Enter any additional details"></textarea>
       </div>
       <button type="submit" class="submit-btn">Submit Product Details</button>
     </form>
@@ -187,7 +180,6 @@ function showSellForm(){
 
   document.getElementById('sellForm').addEventListener('submit', function(e){
     e.preventDefault();
-
     let productName = categorySelect.value;
     if(productName === "Other") productName = document.getElementById('productName').value;
 
@@ -199,33 +191,21 @@ function showSellForm(){
     const shopAddress = document.getElementById('shopAddress').value;
     const additionalDetails = document.getElementById('additionalDetails').value;
 
-    const message = `New Product Submission:
-Product: ${productName}
-Price: ${price}
-Min Qty: ${minQty}
-Delivery Charge/km: ${deliveryCharge}
-Seller Name: ${sellerName}
-Contact: ${sellerContact}
-Shop Address: ${shopAddress}
-Details: ${additionalDetails}`;
+    const message = `New Product Submission:\nProduct: ${productName}\nPrice: ${price}\nMin Qty: ${minQty}\nDelivery Charge/km: ${deliveryCharge}\nSeller Name: ${sellerName}\nContact: ${sellerContact}\nShop Address: ${shopAddress}\nDetails: ${additionalDetails}`;
 
-    // Open WhatsApp
     const waNumber = "917977523959";
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
 
-    // Show toast
     const toast = document.getElementById('toast');
     toast.textContent = "Message sent!";
     toast.classList.add('show');
     setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
 
-    // Reset form
     document.getElementById('sellForm').reset();
     otherDiv.style.display = "none";
   });
 }
 
-// Initial load
 displayProducts();
 </script>
 
