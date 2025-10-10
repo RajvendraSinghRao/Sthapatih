@@ -5,56 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buy Product - Build Shop</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f5f6fa;
-    margin: 0;
-    padding: 0;
-  }
-  h2 {
-    text-align: center;
-    margin: 30px 0;
-    color: #2d3436;
-  }
-  form {
-    max-width: 600px;
-    margin: 0 auto 50px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  form div {
-    margin-bottom: 15px;
-  }
-  form label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    color: #2d3436;
-  }
-  form input, form textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #dfe6e9;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-  form button {
-    background: #0984e3;
-    color: #fff;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    font-size: 16px;
-  }
-  form button:hover {
-    background: #0652dd;
-  }
+  body { font-family: Arial, sans-serif; background: #f5f6fa; margin:0; padding:0; }
+  h2 { text-align:center; margin:30px 0; color:#2d3436; }
+  form { max-width:600px; margin:0 auto 50px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+  form div { margin-bottom:15px; }
+  form label { font-weight:bold; display:block; margin-bottom:5px; color:#2d3436; }
+  form input, form textarea { width:100%; padding:10px; border-radius:5px; border:1px solid #dfe6e9; font-size:16px; box-sizing:border-box; }
+  form button { background:#0984e3; color:#fff; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%; font-size:16px; }
+  form button:hover { background:#0652dd; }
 </style>
 </head>
 <body>
@@ -62,54 +20,31 @@
 <h2>Submit Your Order</h2>
 
 <form id="buyForm">
-  <div>
-    <label>Product</label>
-    <input type="text" name="Product" id="product" readonly />
-  </div>
-  <div>
-    <label>Price</label>
-    <input type="text" name="Price" id="price" readonly />
-  </div>
-  <div>
-    <label>Buyer Name</label>
-    <input type="text" name="Buyer_Name" id="buyerName" placeholder="Enter your name" required />
-  </div>
-  <div>
-    <label>Contact</label>
-    <input type="tel" name="Contact" id="buyerContact" placeholder="Mobile number" required pattern="[0-9]{10}" />
-  </div>
-  <div>
-    <label>Alternate Contact</label>
-    <input type="tel" name="Alternate_Contact" id="buyerAltContact" placeholder="Alternate number" />
-  </div>
-  <div>
-    <label>Email</label>
-    <input type="email" name="Email" id="buyerEmail" placeholder="Email" required />
-  </div>
-  <div>
-    <label>Delivery Address</label>
-    <textarea name="Delivery_Address" id="buyerAddress" placeholder="Delivery Address" required></textarea>
-  </div>
-  <div>
-    <label>Quantity</label>
-    <input type="number" name="Quantity" id="buyerQty" placeholder="Quantity" required min="1" />
-  </div>
-  <button type="submit">Submit Order</button>
+  <div><label>Product</label><input type="text" id="product" readonly /></div>
+  <div><label>Price</label><input type="text" id="price" readonly /></div>
+  <div><label>Buyer Name</label><input type="text" id="buyerName" placeholder="Enter your name" required /></div>
+  <div><label>Contact</label><input type="tel" id="buyerContact" placeholder="Mobile number" required pattern="[0-9]{10}" /></div>
+  <div><label>Alternate Contact</label><input type="tel" id="buyerAltContact" placeholder="Alternate number" /></div>
+  <div><label>Email</label><input type="email" id="buyerEmail" placeholder="Email" required /></div>
+  <div><label>Delivery Address</label><textarea id="buyerAddress" placeholder="Delivery Address" required></textarea></div>
+  <div><label>Quantity</label><input type="number" id="buyerQty" placeholder="Quantity" required min="1" /></div>
+  <button type="submit">Place Order</button>
 </form>
 
 <script>
 const form = document.getElementById("buyForm");
-
-// Decode URL parameters
 const params = new URLSearchParams(window.location.search);
-document.getElementById('product').value = decodeURIComponent(params.get('product') || '');
-document.getElementById('price').value = decodeURIComponent(params.get('price') || '');
 
-form.addEventListener("submit", function(e) {
+const product = decodeURIComponent(params.get('product') || '');
+const price = decodeURIComponent(params.get('price') || '');
+const seller = params.get('seller') || '';
+
+document.getElementById('product').value = product;
+document.getElementById('price').value = price;
+
+form.addEventListener("submit", function(e){
   e.preventDefault();
 
-  const product = document.getElementById("product").value.trim();
-  const price = document.getElementById("price").value.trim();
   const buyerName = document.getElementById("buyerName").value.trim();
   const contact = document.getElementById("buyerContact").value.trim();
   const altContact = document.getElementById("buyerAltContact").value.trim();
@@ -117,43 +52,27 @@ form.addEventListener("submit", function(e) {
   const address = document.getElementById("buyerAddress").value.trim();
   const quantity = document.getElementById("buyerQty").value.trim();
 
-  if (!product || !price || !buyerName || !contact || !email || !address || !quantity) {
+  if(!buyerName || !contact || !email || !address || !quantity){
     alert("Please fill in all required fields.");
     return;
   }
 
-  const data = new URLSearchParams();
-  data.append("Product", product);
-  data.append("Price", price);
-  data.append("Buyer_Name", buyerName);
-  data.append("Contact", contact);
-  data.append("Alternate_Contact", altContact);
-  data.append("Email", email);
-  data.append("Delivery_Address", address);
-  data.append("Quantity", quantity);
+  const message = `New Order:
+Product: ${product}
+Price: ${price}
+Quantity: ${quantity}
+Buyer: ${buyerName}
+Contact: ${contact}
+Alt Contact: ${altContact}
+Email: ${email}
+Address: ${address}`;
 
-  fetch("YOUR_APPS_SCRIPT_URL_HERE", { 
-    method: "POST",
-    body: data
-  })
-  .then(response => response.text())
-  .then(text => {
-    if(text === "Success") {
-      alert("Order submitted successfully!");
-      form.reset();
-      window.location.href = "index.html";
-    } else {
-      alert("Error: " + text);
-    }
-  })
-  .catch(error => {
-    alert("Error submitting order.");
-    console.error(error);
-  });
+  const phoneNumber = seller.startsWith("91") ? seller : "91"+seller;
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
 });
-
 </script>
 
 </body>
 </html>
-
