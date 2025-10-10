@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy Product - Build Shop</title>
+<style>
+body{ font-family:Arial, sans-serif; background:#f5f6fa; }
+form{ max-width:600px; margin:50px auto; background:#fff; padding:25px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+form div{ margin-bottom:15px; }
+form label{ font-weight:bold; display:block; margin-bottom:5px; color:#2d3436; }
+form input, form textarea{ width:100%; padding:10px; border-radius:5px; border:1px solid #dfe6e9; }
+form button{ background:#0984e3; color:#fff; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%; }
+form button:hover{ background:#0652dd; }
+h2{text-align:center;margin-bottom:20px;color:#2d3436;}
+</style>
+</head>
+<body>
+
+<h2>Submit Your Order</h2>
+<form id="buyForm">
+  <div><label>Product</label><input type="text" id="product" readonly></div>
+  <div><label>Price</label><input type="text" id="price" readonly></div>
+  <div><label>Buyer Name</label><input type="text" id="buyerName" required></div>
+  <div><label>Contact</label><input type="tel" id="buyerContact" required></div>
+  <div><label>Alternate Contact</label><input type="tel" id="buyerAltContact"></div>
+  <div><label>Email</label><input type="email" id="buyerEmail"></div>
+  <div><label>Delivery Address</label><textarea id="buyerAddress" required></textarea></div>
+  <div><label>Quantity</label><input type="number" id="buyerQty" required></div>
+  <button type="submit">Submit Product Details</button>
+</form>
+
+<script>
+// Get product data from URL
+const params = new URLSearchParams(window.location.search);
+document.getElementById('product').value = params.get('product') || '';
+document.getElementById('price').value = params.get('price') || '';
+
+let userLocation = {};
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLocation.lat = pos.coords.latitude;
+    userLocation.lon = pos.coords.longitude;
+  });
+}
+
+document.getElementById('buyForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const buyerData = {
+    product: document.getElementById('product').value,
+    price: document.getElementById('price').value,
+    name: document.getElementById('buyerName').value,
+    contact: document.getElementById('buyerContact').value,
+    altContact: document.getElementById('buyerAltContact').value,
+    email: document.getElementById('buyerEmail').value,
+    address: document.getElementById('buyerAddress').value,
+    quantity: document.getElementById('buyerQty').value,
+    location: userLocation
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbx8yCpuUr9rVudRpAwUkuRPQ0zAqfbQh3PxFzLUjo3IRBbJrzOmIEWwtTNaS0wizJTE8Q/exec", {
+    method: "POST",
+    body: JSON.stringify(buyerData),
+    headers: {"Content-Type":"application/json"}
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status==="success"){
+      alert("Order Submitted Successfully!");
+      document.getElementById('buyForm').reset();
+    } else { alert("Error submitting order: "+data.message); }
+  })
+  .catch(err=>alert("Error: "+err));
+});
+</script>
+
+</body>
+</html>
