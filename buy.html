@@ -3,36 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buy Product - Build Shop</title>
+<title>Place Your Order - Build Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Arial, sans-serif; background: #f5f6fa; margin:0; padding:0; }
-  h2 { text-align:center; margin:30px 0; color:#2d3436; }
-  form { max-width:600px; margin:0 auto 50px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-  form div { margin-bottom:15px; }
-  form label { font-weight:bold; display:block; margin-bottom:5px; color:#2d3436; }
-  form input, form textarea { width:100%; padding:10px; border-radius:5px; border:1px solid #dfe6e9; font-size:16px; box-sizing:border-box; }
-  form button { background:#0984e3; color:#fff; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%; font-size:16px; }
-  form button:hover { background:#0652dd; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    color: #2d3436;
+  }
+
+  h2 {
+    text-align: center;
+    margin: 30px 0;
+    color: #0984e3;
+    font-size: 2rem;
+  }
+
+  form {
+    max-width: 650px;
+    margin: 0 auto 50px auto;
+    background: #fff;
+    padding: 35px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-weight: 500;
+    color: #636e72;
+    pointer-events: none;
+    transition: 0.2s all;
+    background: #fff;
+    padding: 0 4px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 1px solid #dfe6e9;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #0984e3;
+    box-shadow: 0 0 5px rgba(9,132,227,0.3);
+  }
+
+  input:focus + label, input:not(:placeholder-shown) + label,
+  textarea:focus + label, textarea:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 10px;
+    font-size: 0.85rem;
+    color: #0984e3;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #00b894;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s all;
+  }
+
+  button:hover {
+    background: #019875;
+    transform: scale(1.02);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00b894;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    z-index: 2000;
+  }
+
+  .toast.show {
+    opacity: 1;
+  }
+
+  /* Responsive */
+  @media(max-width:500px){
+    form { padding: 25px 20px; }
+  }
 </style>
 </head>
 <body>
 
-<h2>Submit Your Order</h2>
+<h2>Place Your Order</h2>
 
 <form id="buyForm">
-  <div><label>Product</label><input type="text" id="product" readonly /></div>
-  <div><label>Price</label><input type="text" id="price" readonly /></div>
-  <div><label>Buyer Name</label><input type="text" id="buyerName" placeholder="Enter your name" required /></div>
-  <div><label>Contact</label><input type="tel" id="buyerContact" placeholder="Mobile number" required pattern="[0-9]{10}" /></div>
-  <div><label>Alternate Contact</label><input type="tel" id="buyerAltContact" placeholder="Alternate number" /></div>
-  <div><label>Email</label><input type="email" id="buyerEmail" placeholder="Email" required /></div>
-  <div><label>Delivery Address</label><textarea id="buyerAddress" placeholder="Delivery Address" required></textarea></div>
-  <div><label>Quantity</label><input type="number" id="buyerQty" placeholder="Quantity" required min="1" /></div>
+  <div class="form-group">
+    <input type="text" id="product" readonly placeholder=" "/>
+    <label>Product</label>
+  </div>
+  <div class="form-group">
+    <input type="text" id="price" readonly placeholder=" "/>
+    <label>Price</label>
+  </div>
+  <div class="form-group">
+    <input type="text" id="buyerName" placeholder=" " required />
+    <label>Buyer Name</label>
+  </div>
+  <div class="form-group">
+    <input type="tel" id="buyerContact" placeholder=" " required pattern="[0-9]{10}" />
+    <label>Contact</label>
+  </div>
+  <div class="form-group">
+    <input type="tel" id="buyerAltContact" placeholder=" " />
+    <label>Alternate Contact</label>
+  </div>
+  <div class="form-group">
+    <input type="email" id="buyerEmail" placeholder=" " required />
+    <label>Email</label>
+  </div>
+  <div class="form-group">
+    <textarea id="buyerAddress" placeholder=" " required></textarea>
+    <label>Delivery Address</label>
+  </div>
+  <div class="form-group">
+    <input type="number" id="buyerQty" placeholder=" " required min="1" />
+    <label>Quantity</label>
+  </div>
   <button type="submit">Place Order</button>
 </form>
 
+<div class="toast" id="toast">Order submitted successfully!</div>
+
 <script>
 const form = document.getElementById("buyForm");
+const toast = document.getElementById("toast");
 const params = new URLSearchParams(window.location.search);
 
 const product = decodeURIComponent(params.get('product') || '');
@@ -69,6 +202,10 @@ Address: ${address}`;
 
   const phoneNumber = seller.startsWith("91") ? seller : "91"+seller;
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  // Show toast
+  toast.classList.add("show");
+  setTimeout(()=> toast.classList.remove("show"),3000);
 
   window.open(url, "_blank");
 });
