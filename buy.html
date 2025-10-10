@@ -31,21 +31,26 @@ h2{text-align:center;margin-bottom:20px;color:#2d3436;}
 </form>
 
 <script>
-// Get product data from URL
+// Get product info from URL
 const params = new URLSearchParams(window.location.search);
 document.getElementById('product').value = params.get('product') || '';
 document.getElementById('price').value = params.get('price') || '';
 
+// Get user location
 let userLocation = {};
 if(navigator.geolocation){
   navigator.geolocation.getCurrentPosition(pos => {
     userLocation.lat = pos.coords.latitude;
     userLocation.lon = pos.coords.longitude;
+  }, err => {
+    userLocation.lat = "";
+    userLocation.lon = "";
   });
 }
 
-document.getElementById('buyForm').addEventListener('submit',function(e){
+document.getElementById('buyForm').addEventListener('submit', function(e){
   e.preventDefault();
+
   const buyerData = {
     product: document.getElementById('product').value,
     price: document.getElementById('price').value,
@@ -63,14 +68,17 @@ document.getElementById('buyForm').addEventListener('submit',function(e){
     body: JSON.stringify(buyerData),
     headers: {"Content-Type":"application/json"}
   })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.status==="success"){
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success"){
       alert("Order Submitted Successfully!");
       document.getElementById('buyForm').reset();
-    } else { alert("Error submitting order: "+data.message); }
+      window.location.href = "index.html"; // Redirect back to home
+    } else {
+      alert("Error submitting order: " + data.message);
+    }
   })
-  .catch(err=>alert("Error: "+err));
+  .catch(err => alert("Error: " + err));
 });
 </script>
 
