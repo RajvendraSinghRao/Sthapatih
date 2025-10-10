@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buy Product - Build Shop</title>
 <style>
-body{ font-family:Arial, sans-serif; background:#f5f6fa; }
-form{ max-width:600px; margin:50px auto; background:#fff; padding:25px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
-form div{ margin-bottom:15px; }
-form label{ font-weight:bold; display:block; margin-bottom:5px; color:#2d3436; }
-form input, form textarea{ width:100%; padding:10px; border-radius:5px; border:1px solid #dfe6e9; }
-form button{ background:#0984e3; color:#fff; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%; }
-form button:hover{ background:#0652dd; }
-h2{text-align:center;margin-bottom:20px;color:#2d3436;}
+  body { font-family: Arial, sans-serif; background: #f5f6fa; }
+  h2 { text-align: center; margin-bottom: 20px; color: #2d3436; }
+  form { max-width: 600px; margin: 50px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  form div { margin-bottom: 15px; }
+  form label { font-weight: bold; display: block; margin-bottom: 5px; color: #2d3436; }
+  form input, form textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #dfe6e9; }
+  form button { background: #0984e3; color: #fff; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+  form button:hover { background: #0652dd; }
 </style>
 </head>
 <body>
@@ -31,55 +31,59 @@ h2{text-align:center;margin-bottom:20px;color:#2d3436;}
 </form>
 
 <script>
-// Get product info from URL
-const params = new URLSearchParams(window.location.search);
-document.getElementById('product').value = params.get('product') || '';
-document.getElementById('price').value = params.get('price') || '';
+  // 1️⃣ Load product and price from URL
+  const params = new URLSearchParams(window.location.search);
+  document.getElementById('product').value = params.get('product') || '';
+  document.getElementById('price').value = params.get('price') || '';
 
-// Get user location
-let userLocation = { lat: '', lon: '' };
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(function(position){
-    userLocation.lat = position.coords.latitude;
-    userLocation.lon = position.coords.longitude;
-  }, function(err){
-    console.warn("Geolocation error:", err);
+  // 2️⃣ Get user location
+  let userLocation = { lat: '', lon: '' };
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        userLocation.lat = position.coords.latitude;
+        userLocation.lon = position.coords.longitude;
+      },
+      function(err) {
+        console.warn("Geolocation error:", err);
+      }
+    );
+  }
+
+  // 3️⃣ Form submission
+  document.getElementById('buyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const buyerData = {
+      Product: document.getElementById('product').value,
+      Price: document.getElementById('price').value,
+      Buyer_Name: document.getElementById('buyerName').value,
+      Contact: document.getElementById('buyerContact').value,
+      Alternate_Contact: document.getElementById('buyerAltContact').value,
+      Email: document.getElementById('buyerEmail').value,
+      Delivery_Address: document.getElementById('buyerAddress').value,
+      Quantity: document.getElementById('buyerQty').value,
+      Latitude: userLocation.lat,
+      Longitude: userLocation.lon,
+      Timestamp: new Date().toLocaleString()
+    };
+
+    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", { 
+      method: "POST",
+      body: JSON.stringify(buyerData),
+      headers: {"Content-Type":"application/json"}
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.status === "success"){
+        alert("Order Submitted Successfully!");
+        window.location.href = "index.html"; // redirect to home
+      } else {
+        alert("Error submitting order: " + data.message);
+      }
+    })
+    .catch(err => alert("Error: " + err));
   });
-}
-
-document.getElementById('buyForm').addEventListener('submit', function(e){
-  e.preventDefault();
-
-  const buyerData = {
-    Product: document.getElementById('product').value,
-    Price: document.getElementById('price').value,
-    Buyer_Name: document.getElementById('buyerName').value,
-    Contact: document.getElementById('buyerContact').value,
-    Alternate_Contact: document.getElementById('buyerAltContact').value,
-    Email: document.getElementById('buyerEmail').value,
-    Delivery_Address: document.getElementById('buyerAddress').value,
-    Quantity: document.getElementById('buyerQty').value,
-    Latitude: userLocation.lat,
-    Longitude: userLocation.lon,
-    Timestamp: new Date().toLocaleString()
-  };
-
-  fetch("https://script.google.com/macros/s/AKfycbx8yCpuUr9rVudRpAwUkuRPQ0zAqfbQh3PxFzLUjo3IRBbJrzOmIEWwtTNaS0wizJTE8Q/exec, { 
-    method: "POST",
-    body: JSON.stringify(buyerData),
-    headers: {"Content-Type":"application/json"}
-  })
-  .then(res => res.json())
-  .then(data => {
-    if(data.status === "success"){
-      alert("Order Submitted Successfully!");
-      window.location.href = "index.html"; // back to home
-    } else {
-      alert("Error submitting order: " + data.message);
-    }
-  })
-  .catch(err => alert("Error: " + err));
-});
 </script>
 </body>
 </html>
