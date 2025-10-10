@@ -45,7 +45,7 @@
   </div>
   <div>
     <label>Alternate Contact</label>
-    <input type="tel" id="buyerAltContact" placeholder="Alternate number" required>
+    <input type="tel" id="buyerAltContact" placeholder="Alternate number">
   </div>
   <div>
     <label>Email</label>
@@ -68,8 +68,8 @@
   document.getElementById('product').value = params.get('product') || '';
   document.getElementById('price').value = params.get('price') || '';
 
-  // Form submission
-  document.getElementById('buyForm').addEventListener('submit', function(e) {
+  // Submit form
+  document.getElementById('buyForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const data = {
@@ -83,22 +83,25 @@
       Quantity: document.getElementById('buyerQty').value
     };
 
-      fetch("https://script.google.com/macros/s/AKfycbzcr15-Z6asjwVV-Lu9gfQR25VZso7Ocu5UbZN5qL5L30i4NVjhFEfck2G5AxPOaVSv0w/exec", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-})
-.then(res => res.json())
-.then(res => {
-  if(res.status === "success") {
-    alert("Order submitted successfully!");
-    window.location.href = "index.html";
-  } else {
-    alert("Error: " + res.message);
-  }
-})
-.catch(err => alert("Error: " + err));
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyRHyHmGiRQt0Tp5rBQTiHK4YnbczAIY-pKZYeQf84gkGzodMn3D9J1zQ4fFMVL4tb7/exec"; // replace with Apps Script Web App URL
 
+    try {
+      const res = await fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (result.status === "success") {
+        alert("Order submitted successfully!");
+        window.location.href = "index.html";
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (err) {
+      alert("Error: " + err);
+    }
+  });
 </script>
 
 </body>
