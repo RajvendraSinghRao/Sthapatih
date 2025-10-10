@@ -36,17 +36,6 @@ const params = new URLSearchParams(window.location.search);
 document.getElementById('product').value = params.get('product') || '';
 document.getElementById('price').value = params.get('price') || '';
 
-// Get user location
-let userLocation = {};
-if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLocation.lat = pos.coords.latitude;
-    userLocation.lon = pos.coords.longitude;
-  }, err => {
-    userLocation.lat = "";
-    userLocation.lon = "";
-  });
-}
 
 document.getElementById('buyForm').addEventListener('submit', function(e){
   e.preventDefault();
