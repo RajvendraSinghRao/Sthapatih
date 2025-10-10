@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced E-Commerce Platform</title>
+<title>Build Shop</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: Arial, sans-serif; background: #f5f6fa; overflow-x: hidden; }
@@ -23,7 +23,7 @@
   .sidebar {
     position: fixed;
     top: 0;
-    left: -260px; /* hidden by default */
+    left: -260px;
     width: 250px;
     height: 100%;
     background: #2d3436;
@@ -34,7 +34,7 @@
     display: flex;
     flex-direction: column;
   }
-  .sidebar h2 { margin-bottom: 20px; }
+  .sidebar h2 { margin-bottom: 20px; color:#00cec9;}
   .sidebar button {
     padding: 12px;
     margin-bottom: 15px;
@@ -67,8 +67,14 @@
     transition: margin-left 0.3s;
   }
 
+  .main h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color:#2d3436;
+  }
+
   /* Product Grid */
-  .products { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; margin-top: 60px; }
+  .products { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 20px; }
   .product-card {
     background: #fff;
     border-radius: 10px;
@@ -94,19 +100,20 @@
   }
   .product-card button:hover { background: #019875; }
 
-  /* Buyer Form */
-  #buyFormContainer {
-    margin-top: 30px;
+  /* Forms */
+  form {
     background: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 20px auto;
   }
-  #buyForm div { margin-bottom: 12px; }
-  #buyForm label { font-weight: bold; display: block; margin-bottom: 5px; color: #2d3436; }
-  #buyForm input, #buyForm textarea { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #dfe6e9; }
-  #buyForm button { background: #0984e3; color: #fff; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-  #buyForm button:hover { background: #0652dd; }
+  form div { margin-bottom: 15px; }
+  form label { font-weight: bold; display: block; margin-bottom: 5px; color: #2d3436; }
+  form input, form textarea, form select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #dfe6e9; }
+  form button { background: #0984e3; color: #fff; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+  form button:hover { background: #0652dd; }
 </style>
 </head>
 <body>
@@ -114,16 +121,16 @@
 <div class="hamburger" onclick="openSidebar()">&#9776;</div>
 
 <div class="sidebar" id="sidebar">
-  <h2>Seller Panel</h2>
+  <h2>Build Shop</h2>
+  <button onclick="openHome()">Home</button>
   <button onclick="showSellForm()">Sell Your Product</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <div class="main" id="mainContent">
-  <h2>Our Products</h2>
+  <h2>Build Shop</h2>
   <div class="products" id="productsContainer"></div>
-  <div id="buyFormContainer"></div>
 </div>
 
 <script>
@@ -136,8 +143,12 @@ function closeSidebar(){
   document.getElementById('sidebar').style.left = '-260px';
   document.getElementById('overlay').style.display = 'none';
 }
+function openHome(){
+  displayProducts();
+  closeSidebar();
+}
 
-// Example products
+// Products
 const products = [
   { name: "Bricks", price: 5, unit: "per unit" },
   { name: "Cement", price: 350, unit: "per bag" },
@@ -145,81 +156,30 @@ const products = [
   { name: "Paint", price: 500, unit: "per liter" }
 ];
 
-// Display products
-const container = document.getElementById('productsContainer');
-products.forEach(p => {
-  const card = document.createElement('div');
-  card.className = 'product-card';
-  card.innerHTML = `
-    <h3>${p.name}</h3>
-    <p>Price: ${p.price} ${p.unit}</p>
-    <button onclick="buyProduct('${p.name}', ${p.price})">Buy Now</button>
-  `;
-  container.appendChild(card);
-});
-
-// Buyer Form
-function buyProduct(name, price){
-  document.getElementById('buyFormContainer').innerHTML = `
-    <h3>Buy ${name}</h3>
-    <form id="buyForm">
-      <div><label>Your Name</label><input type="text" id="buyerName" required></div>
-      <div><label>Contact Number</label><input type="tel" id="buyerContact" required></div>
-      <div><label>Alternate Number</label><input type="tel" id="buyerAltContact"></div>
-      <div><label>Email</label><input type="email" id="buyerEmail"></div>
-      <div><label>Delivery Address</label><textarea id="buyerAddress" required></textarea></div>
-      <div><label>Quantity</label><input type="number" id="buyerQty" required></div>
-      <button type="submit">Submit Order</button>
-    </form>
-  `;
-
-  // Capture location
-  let userLocation = {};
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(position){
-      userLocation.lat = position.coords.latitude;
-      userLocation.lon = position.coords.longitude;
-    });
-  }
-
-  document.getElementById('buyForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const buyerData = {
-      product: name,
-      price: price,
-      name: document.getElementById('buyerName').value,
-      contact: document.getElementById('buyerContact').value,
-      altContact: document.getElementById('buyerAltContact').value,
-      email: document.getElementById('buyerEmail').value,
-      address: document.getElementById('buyerAddress').value,
-      quantity: document.getElementById('buyerQty').value,
-      location: userLocation
-    };
-
-    fetch("https://script.google.com/macros/s/AKfycbx8yCpuUr9rVudRpAwUkuRPQ0zAqfbQh3PxFzLUjo3IRBbJrzOmIEWwtTNaS0wizJTE8Q/exec", {
-      method: "POST",
-      body: JSON.stringify(buyerData),
-      headers: {"Content-Type": "application/json"}
-    })
-    .then(res => res.json())
-    .then(data => {
-      if(data.status === "success"){
-        alert("Order Submitted Successfully!");
-        document.getElementById('buyFormContainer').innerHTML = "";
-      } else {
-        alert("Error submitting order: " + data.message);
-      }
-    })
-    .catch(err => alert("Error: " + err));
+function displayProducts(){
+  document.getElementById('mainContent').innerHTML = `<h2>Build Shop</h2><div class="products" id="productsContainer"></div>`;
+  const container = document.getElementById('productsContainer');
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `<h3>${p.name}</h3><p>Price: ${p.price} ${p.unit}</p>
+    <button onclick="goToBuyerPage('${p.name}',${p.price})">Buy Now</button>`;
+    container.appendChild(card);
   });
 }
 
-// Seller form function
-function showSellForm() {
-  document.getElementById('mainContent').innerHTML = `
+// Redirect to buyer form page
+function goToBuyerPage(name, price){
+  window.location.href = `buy.html?product=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}`;
+}
+
+// Seller Form
+function showSellForm(){
+  closeSidebar();
+  document.getElementById('mainContent').innerHTML=` 
     <h2>Sell Your Product</h2>
     <form id="sellForm">
-      <div><label>Product Category</label>
+      <div><label>Category</label>
         <select id="category" required>
           <option value="">Select</option>
           <option>Bricks</option>
@@ -231,23 +191,23 @@ function showSellForm() {
         </select>
       </div>
       <div><label>Product Name</label><input type="text" id="productName" required></div>
-      <div><label>Price per unit</label><input type="number" id="price" required></div>
+      <div><label>Price</label><input type="number" id="price" required></div>
       <div><label>Minimum Quantity</label><input type="number" id="minQty" required></div>
       <div><label>Delivery Charge per km</label><input type="number" id="deliveryCharge" required></div>
       <div><label>Seller Name</label><input type="text" id="sellerName" required></div>
-      <div><label>Contact Number</label><input type="tel" id="sellerContact" required></div>
+      <div><label>Contact</label><input type="tel" id="sellerContact" required></div>
       <div><label>Shop Address</label><textarea id="shopAddress" required></textarea></div>
       <div><label>Additional Details</label><textarea id="additionalDetails"></textarea></div>
-      <button type="submit">Sell via WhatsApp</button>
+      <button type="submit">Submit Product Details</button>
     </form>
   `;
-
-  document.getElementById('sellForm').addEventListener('submit', function(e){
+  document.getElementById('sellForm').addEventListener('submit',function(e){
     e.preventDefault();
-    const message = `Category: ${document.getElementById('category').value}%0AProduct: ${document.getElementById('productName').value}%0APrice: ${document.getElementById('price').value}%0AMin Qty: ${document.getElementById('minQty').value}%0ADelivery Charge: ${document.getElementById('deliveryCharge').value}%0ASeller: ${document.getElementById('sellerName').value}%0AContact: ${document.getElementById('sellerContact').value}%0AShop: ${document.getElementById('shopAddress').value}%0ADetails: ${document.getElementById('additionalDetails').value}`;
-    window.open(`https://wa.me/7977523959?text=${message}`, '_blank');
+    alert("Seller details submitted. (Integrate WhatsApp or backend as needed)");
   });
 }
+
+displayProducts();
 </script>
 </body>
 </html>
