@@ -4,43 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Build Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* Reset & fonts */
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: Arial, sans-serif; background: #f5f6fa; overflow-x: hidden; }
+  body { font-family: 'Roboto', sans-serif; background: #f0f2f5; color: #2d3436; overflow-x: hidden; transition: background 0.3s; }
 
   /* Hamburger */
-  .hamburger { position: fixed; top: 15px; left: 15px; font-size: 30px; cursor: pointer; z-index: 1002; color: #2d3436; }
+  .hamburger { position: fixed; top: 20px; left: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; }
+  .hamburger:hover { transform: scale(1.2); }
 
   /* Sidebar */
-  .sidebar { position: fixed; top:0; left:-260px; width:250px; height:100%; background:#2d3436; color:#fff; padding:80px 20px 20px 20px; transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; }
-  .sidebar h2 { margin-bottom:20px; color:#00cec9; margin-top:0; }
-  .sidebar button { padding:12px; margin-bottom:15px; background:#636e72; border:none; color:#fff; font-size:16px; cursor:pointer; border-radius:5px; transition:background 0.3s; }
-  .sidebar button:hover { background:#b2bec3; color:#2d3436; }
+  .sidebar { 
+    position: fixed; top:0; left:-280px; width:260px; height:100%; 
+    background: linear-gradient(180deg,#0984e3,#74b9ff); color:#fff; padding:80px 20px 20px 20px; 
+    transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; 
+    border-top-right-radius:15px; border-bottom-right-radius:15px;
+  }
+  .sidebar h2 { margin-bottom:30px; font-weight:700; text-align:center; color:#ffeaa7; }
+  .sidebar button { 
+    padding:12px; margin-bottom:15px; background:rgba(255,255,255,0.2); border:none; color:#fff; 
+    font-size:16px; cursor:pointer; border-radius:8px; font-weight:500; display:flex; align-items:center; 
+    justify-content:flex-start; gap:10px; transition:background 0.3s, transform 0.2s; 
+  }
+  .sidebar button:hover { background:rgba(255,255,255,0.35); transform:scale(1.02); }
 
   /* Overlay */
-  .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:900; }
+  .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); display:none; z-index:900; }
 
   /* Main content */
-  .main { padding:20px; margin-left:0; transition:margin-left 0.3s; }
-  .main h2 { text-align:center; margin-bottom:30px; color:#2d3436; }
+  .main { padding:30px 20px; margin-left:0; transition:margin-left 0.3s; }
+  .main h2 { text-align:center; margin-bottom:40px; color:#0984e3; font-size:2rem; letter-spacing:1px; }
 
   /* Product Grid */
-  .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
-  .product-card { background:#fff; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); padding:15px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s; text-align:center; }
-  .product-card:hover { transform:translateY(-5px); }
-  .product-card img { max-width:100%; height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
-  .product-card h3 { margin-bottom:10px; color:#2d3436; }
-  .product-card p { margin-bottom:15px; color:#636e72; font-weight:bold; }
-  .product-card button { padding:10px; background:#00b894; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition:background 0.3s; }
-  .product-card button:hover { background:#019875; }
+  .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:25px; }
+  .product-card { 
+    background:#fff; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.1); 
+    padding:20px; display:flex; flex-direction:column; justify-content:space-between; 
+    transition:transform 0.3s, box-shadow 0.3s; text-align:center; position:relative; overflow:hidden;
+  }
+  .product-card:hover { transform:translateY(-8px); box-shadow:0 12px 25px rgba(0,0,0,0.15); }
+  .product-card img { max-width:100%; height:180px; object-fit:cover; border-radius:15px; margin-bottom:15px; }
+  .product-card h3 { margin-bottom:10px; color:#2d3436; font-size:1.2rem; font-weight:700; }
+  .product-card p { margin-bottom:15px; color:#636e72; font-weight:500; font-size:1rem; }
+  .product-card button { 
+    padding:12px; background:#00b894; color:#fff; border:none; border-radius:10px; 
+    cursor:pointer; font-weight:700; font-size:1rem; transition:background 0.3s, transform 0.2s;
+  }
+  .product-card button:hover { background:#019875; transform:scale(1.05); }
+
+  /* Product card hover info */
+  .product-card .hover-info {
+    position:absolute; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.6); color:#fff; 
+    padding:10px; font-size:0.9rem; opacity:0; transition:opacity 0.3s;
+    border-bottom-left-radius:15px; border-bottom-right-radius:15px;
+  }
+  .product-card:hover .hover-info { opacity:1; }
 
   /* Forms */
-  form { background:#fff; padding:25px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); max-width:600px; margin:20px auto; }
-  form div { margin-bottom:15px; }
-  form label { font-weight:bold; display:block; margin-bottom:5px; color:#2d3436; }
-  form input, form textarea, form select { width:100%; padding:10px; border-radius:5px; border:1px solid #dfe6e9; }
-  form button { background:#0984e3; color:#fff; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%; }
-  form button:hover { background:#0652dd; }
+  form { 
+    background:#fff; padding:30px; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.1); 
+    max-width:650px; margin:20px auto; position:relative;
+  }
+  form div { margin-bottom:18px; position:relative; }
+  form label { font-weight:500; display:block; margin-bottom:6px; color:#2d3436; transition: all 0.2s; }
+  form input, form textarea, form select { 
+    width:100%; padding:12px; border-radius:10px; border:1px solid #dfe6e9; font-size:1rem; 
+    transition:border 0.2s, box-shadow 0.2s;
+  }
+  form input:focus, form textarea:focus, form select:focus { border-color:#0984e3; box-shadow:0 0 5px rgba(9,132,227,0.3); outline:none; }
+  form button { 
+    background:#0984e3; color:#fff; padding:14px; border:none; border-radius:10px; 
+    cursor:pointer; font-weight:700; width:100%; font-size:1.1rem; transition:background 0.3s, transform 0.2s;
+  }
+  form button:hover { background:#0652dd; transform:scale(1.02); }
+
+  /* Toast */
+  .toast {
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00b894; color:#fff; 
+    padding:12px 25px; border-radius:8px; font-weight:500; opacity:0; pointer-events:none; transition:opacity 0.5s;
+    z-index:2000;
+  }
+  .toast.show { opacity:1; }
+
+  /* Responsive */
+  @media(max-width:500px){
+    .main { padding:20px 10px; }
+    .product-card img { height:150px; }
+  }
 </style>
 </head>
 <body>
@@ -49,8 +100,8 @@
 
 <div class="sidebar" id="sidebar">
   <h2>Build Shop</h2>
-  <button onclick="openHome()">Home</button>
-  <button onclick="showSellForm()">Sell Your Product</button>
+  <button onclick="openHome()">🏠 Home</button>
+  <button onclick="showSellForm()">🛒 Sell Product</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -60,6 +111,8 @@
   <div class="products" id="productsContainer"></div>
 </div>
 
+<div class="toast" id="toast">Product details sent successfully!</div>
+
 <script>
 // Sidebar toggle
 function openSidebar(){
@@ -67,7 +120,7 @@ function openSidebar(){
   document.getElementById('overlay').style.display = 'block';
 }
 function closeSidebar(){
-  document.getElementById('sidebar').style.left = '-260px';
+  document.getElementById('sidebar').style.left = '-280px';
   document.getElementById('overlay').style.display = 'none';
 }
 function openHome(){
@@ -75,7 +128,7 @@ function openHome(){
   closeSidebar();
 }
 
-// Products with images and seller WhatsApp numbers
+// Products
 const products = [
   { name: "Bricks", price: 5, unit: "per unit", img: "https://i.imgur.com/8aFQkJ6.jpg", sellerNumber: "917977523959" },
   { name: "Cement", price: 350, unit: "per bag", img: "https://i.imgur.com/jt5eV9G.jpg", sellerNumber: "919224626208" },
@@ -92,12 +145,13 @@ function displayProducts(){
     card.innerHTML = `<img src="${p.img}" alt="${p.name}">
                       <h3>${p.name}</h3>
                       <p>Price: ${p.price} ${p.unit}</p>
-                      <button onclick="goToBuyerPage('${p.name}',${p.price},'${p.sellerNumber}')">Buy Now</button>`;
+                      <button onclick="goToBuyerPage('${p.name}',${p.price},'${p.sellerNumber}')">Buy Now</button>
+                      <div class="hover-info">Seller: ${p.sellerNumber}</div>`;
     container.appendChild(card);
   });
 }
 
-// Redirect to buyer form page with seller number
+// Redirect to buyer form page
 function goToBuyerPage(name, price, sellerNumber){
   window.location.href = `buy.html?product=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&seller=${sellerNumber}`;
 }
@@ -105,6 +159,7 @@ function goToBuyerPage(name, price, sellerNumber){
 // Seller Form
 function showSellForm(){
   closeSidebar();
+  window.scrollTo({top:0, behavior:'smooth'});
   document.getElementById('mainContent').innerHTML=` 
     <h2>Sell Your Product</h2>
     <form id="sellForm">
@@ -142,6 +197,7 @@ function showSellForm(){
     } else {
       otherDiv.style.display = "none";
       document.getElementById('productName').required = false;
+      document.getElementById('productName').value = "";
     }
   });
 
@@ -172,10 +228,16 @@ Contact: ${sellerContact}
 Address: ${shopAddress}
 Details: ${additionalDetails}`;
 
-    const phoneNumber = sellerContact.startsWith("91") ? sellerContact : "91"+sellerContact;
+    let phoneNumber = sellerContact.replace(/\D/g,'');
+    if(!phoneNumber.startsWith("91")) phoneNumber = "91" + phoneNumber;
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-    window.open(url, "_blank"); // opens WhatsApp
+    // Show toast confirmation
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),3000);
+
+    window.open(url, "_blank");
   });
 }
 
