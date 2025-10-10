@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Site</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+  }
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    background: #333;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .sidebar button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    background: #555;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  .sidebar button:hover {
+    background: #777;
+  }
+  /* Main content */
+  .main {
+    flex: 1;
+    padding: 20px;
+  }
+  .form-group {
+    margin-bottom: 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 7px;
+    box-sizing: border-box;
+  }
+  .product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  img.preview {
+    max-width: 150px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Menu</h2>
+  <button onclick="showSellForm()">Sell</button>
+  <button onclick="showBuy()">Buy</button>
+</div>
+
+<div class="main" id="mainContent">
+  <h2>Welcome to E-Commerce Platform</h2>
+  <p>Select "Sell" to list your product or "Buy" to see products.</p>
+</div>
+
+<script>
+// Show Seller Form
+function showSellForm() {
+  document.getElementById('mainContent').innerHTML = `
+    <h2>Sell Your Product</h2>
+    <form id="sellForm">
+      <div class="form-group">
+        <label>Product Category</label>
+        <select id="category" required>
+          <option value="">Select</option>
+          <option>Bricks</option>
+          <option>Cement</option>
+          <option>Sand</option>
+          <option>Stones</option>
+          <option>Paint</option>
+          <option>Gypsum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" id="productName" required>
+      </div>
+      <div class="form-group">
+        <label>Price per unit</label>
+        <input type="number" id="price" required>
+      </div>
+      <div class="form-group">
+        <label>Minimum Quantity</label>
+        <input type="number" id="minQty" required>
+      </div>
+      <div class="form-group">
+        <label>Delivery Charge per km</label>
+        <input type="number" id="deliveryCharge" required>
+      </div>
+      <div class="form-group">
+        <label>Seller Name</label>
+        <input type="text" id="sellerName" required>
+      </div>
+      <div class="form-group">
+        <label>Contact Number</label>
+        <input type="tel" id="sellerContact" required>
+      </div>
+      <div class="form-group">
+        <label>Shop Address</label>
+        <textarea id="shopAddress" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Additional Details</label>
+        <textarea id="additionalDetails"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Product Photo</label>
+        <input type="file" id="productPhoto" accept="image/*">
+        <img id="photoPreview" class="preview" style="display:none;">
+      </div>
+      <button type="submit">Sell via WhatsApp</button>
+    </form>
+  `;
+
+  // Preview photo
+  document.getElementById('productPhoto').addEventListener('change', function(event){
+    const file = event.target.files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = document.getElementById('photoPreview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Handle WhatsApp submission
+  document.getElementById('sellForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const category = document.getElementById('category').value;
+    const productName = document.getElementById('productName').value;
+    const price = document.getElementById('price').value;
+    const minQty = document.getElementById('minQty').value;
+    const deliveryCharge = document.getElementById('deliveryCharge').value;
+    const sellerName = document.getElementById('sellerName').value;
+    const sellerContact = document.getElementById('sellerContact').value;
+    const shopAddress = document.getElementById('shopAddress').value;
+    const additionalDetails = document.getElementById('additionalDetails').value;
+
+    const message = `Product Category: ${category}%0AProduct Name: ${productName}%0APrice: ${price}%0AMin Quantity: ${minQty}%0ADelivery Charge per km: ${deliveryCharge}%0ASeller Name: ${sellerName}%0AContact: ${sellerContact}%0AShop Address: ${shopAddress}%0AAdditional Details: ${additionalDetails}`;
+
+    window.open(`https://wa.me/7977523959?text=${message}`, '_blank');
+  });
+}
+
+// Show Buy Products
+function showBuy() {
+  document.getElementById('mainContent').innerHTML = `
+    <h2>Available Products</h2>
+    <div class="product">
+      <h3>Bricks</h3>
+      <p>Price: 5/unit</p>
+      <button onclick="buyProduct('Bricks', 5)">Buy</button>
+    </div>
+    <div class="product">
+      <h3>Cement</h3>
+      <p>Price: 350/bag</p>
+      <button onclick="buyProduct('Cement', 350)">Buy</button>
+    </div>
+    <div id="buyFormContainer"></div>
+  `;
+}
+
+function buyProduct(name, price){
+  document.getElementById('buyFormContainer').innerHTML = `
+    <h3>Buy ${name}</h3>
+    <form id="buyForm">
+      <div class="form-group"><label>Your Name</label><input type="text" id="buyerName" required></div>
+      <div class="form-group"><label>Contact Number</label><input type="tel" id="buyerContact" required></div>
+      <div class="form-group"><label>Alternate Number</label><input type="tel" id="buyerAltContact"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="buyerEmail"></div>
+      <div class="form-group"><label>Delivery Address</label><textarea id="buyerAddress" required></textarea></div>
+      <div class="form-group"><label>Quantity</label><input type="number" id="buyerQty" required></div>
+      <button type="submit">Submit Order</button>
+    </form>
+  `;
+
+  // Capture location
+  let userLocation = {};
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(position){
+      userLocation.lat = position.coords.latitude;
+      userLocation.lon = position.coords.longitude;
+    });
+  }
+
+  document.getElementById('buyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const buyerData = {
+      product: name,
+      price: price,
+      name: document.getElementById('buyerName').value,
+      contact: document.getElementById('buyerContact').value,
+      altContact: document.getElementById('buyerAltContact').value,
+      email: document.getElementById('buyerEmail').value,
+      address: document.getElementById('buyerAddress').value,
+      quantity: document.getElementById('buyerQty').value,
+      location: userLocation
+    };
+
+    // Send data to Google Sheets via Apps Script
+    fetch("YOUR_APPS_SCRIPT_URL", {
+      method: "POST",
+      body: JSON.stringify(buyerData),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.status === "success"){
+        alert("Order Submitted Successfully!");
+      } else {
+        alert("Error submitting order: " + data.message);
+      }
+    })
+    .catch(err => alert("Error: " + err));
+  });
+}
+</script>
+
+</body>
+</html>
