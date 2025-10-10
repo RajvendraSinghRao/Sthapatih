@@ -6,7 +6,6 @@
 <title>Buy Product - Build Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  /* Reset & fonts */
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: 'Roboto', sans-serif;
@@ -16,8 +15,17 @@
     color: #2d3436;
   }
 
-  /* Hamburger */
-  .hamburger { position: fixed; top: 20px; left: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; }
+  /* Sticky Hamburger */
+  .hamburger {
+    position: sticky;
+    top: 20px;
+    left: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 1002;
+    color: #0984e3;
+    transition: transform 0.2s;
+  }
   .hamburger:hover { transform: scale(1.2); }
 
   /* Sidebar */
@@ -121,7 +129,6 @@
   }
   .toast.show { opacity: 1; }
 
-  /* Responsive */
   @media(max-width:500px){
     form { padding: 25px 20px; }
   }
@@ -134,7 +141,6 @@
 <div class="sidebar" id="sidebar">
   <h2>Build Shop</h2>
   <button onclick="goHome()">🏠 Home</button>
-  <button onclick="goSell()">🛒 Sell Product</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -186,18 +192,14 @@ const overlay = document.getElementById("overlay");
 function openSidebar(){ sidebar.style.left = "0"; overlay.style.display="block"; }
 function closeSidebar(){ sidebar.style.left = "-280px"; overlay.style.display="none"; }
 function goHome(){ window.location.href="index.html"; }
-function goSell(){ window.location.href="index.html#sell"; }
 
 const form = document.getElementById("buyForm");
 const toast = document.getElementById("toast");
 const params = new URLSearchParams(window.location.search);
 
-const product = decodeURIComponent(params.get('product') || '');
-const price = decodeURIComponent(params.get('price') || '');
+document.getElementById('product').value = decodeURIComponent(params.get('product') || '');
+document.getElementById('price').value = decodeURIComponent(params.get('price') || '');
 const seller = params.get('seller') || '';
-
-document.getElementById('product').value = product;
-document.getElementById('price').value = price;
 
 form.addEventListener("submit", function(e){
   e.preventDefault();
@@ -215,8 +217,8 @@ form.addEventListener("submit", function(e){
   }
 
   const message = `New Order:
-Product: ${product}
-Price: ${price}
+Product: ${document.getElementById('product').value}
+Price: ${document.getElementById('price').value}
 Quantity: ${quantity}
 Buyer: ${buyerName}
 Contact: ${contact}
