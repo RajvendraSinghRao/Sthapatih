@@ -10,8 +10,10 @@
 body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7fa,#f0f2f5); color:#2d3436; overflow-x:hidden; transition: background 0.3s; }
 
 /* Hamburger */
-.hamburger { position: sticky; top: 20px; left: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; background:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
-.hamburger:hover { transform: scale(1.2); }
+.hamburger, .profile-btn { position: sticky; top: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; background:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
+.hamburger:hover, .profile-btn:hover { transform: scale(1.2); }
+.hamburger { left: 20px; }
+.profile-btn { position: fixed; right: 20px; top: 20px; }
 
 /* Sidebar */
 .sidebar { position: fixed; top:0; left:-280px; width:260px; height:100%; background: linear-gradient(180deg,#0984e3,#74b9ff); color:#fff; padding:80px 20px 20px 20px; transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; border-top-right-radius:15px; border-bottom-right-radius:15px; }
@@ -56,12 +58,13 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 .toast.show { opacity:1; }
 
 /* Responsive */
-@media(max-width:500px){ .main { padding:20px 10px; } .product-card img { height:150px; } .hamburger { left:10px; } }
+@media(max-width:500px){ .main { padding:20px 10px; } .product-card img { height:150px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
 </style>
 </head>
 <body>
 
 <div class="hamburger" onclick="openSidebar()">&#9776;</div>
+<div class="profile-btn" onclick="openSellerRegister()">👤</div>
 
 <div class="sidebar" id="sidebar">
   <h2>Build Shop</h2>
@@ -79,6 +82,10 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 <div class="toast" id="toast">Message sent!</div>
 
 <script>
+function openSellerRegister(){
+  window.location.href = 'seller-register.html';
+}
+
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
@@ -109,7 +116,6 @@ function goToBuyerPage(name, price, sellerNumber){
 
 function openHome(){ displayProducts(); }
 
-/* ---------------- SELLER PASSWORD PROTECTION ------------------ */
 const sellerAccounts = {
   "abhi": { name: "Abhishek Rao", number: "7977523959" },
   "ram": { name: "Ram Traders", number: "9988776655" },
@@ -129,7 +135,6 @@ function checkSellerPassword(){
     alert("Incorrect password!");
   }
 }
-/* -------------------------------------------------------------- */
 
 function showSellForm(fixedName="", fixedNumber=""){
   document.getElementById('mainContent').innerHTML = `
