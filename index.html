@@ -45,13 +45,12 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 form { background:#fff; padding:40px 30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.15); max-width:700px; margin:30px auto; position:relative; }
 .form-group { position: relative; margin-bottom: 20px; }
 label { font-weight:500; display:block; margin-bottom:6px; color:#0984e3; font-size:0.95rem; }
-input, textarea, select { width:100%; padding:14px 12px; border-radius:10px; border:1.5px solid #dfe6e9; font-size:1rem; transition:border 0.2s, box-shadow 0.2s, color 0.2s; color:#000; }
+input, textarea { width:100%; padding:14px 12px; border-radius:10px; border:1.5px solid #dfe6e9; font-size:1rem; transition:border 0.2s, box-shadow 0.2s, color 0.2s; color:#000; }
 input::placeholder, textarea::placeholder { color:#000; opacity:0.7; }
-input:focus, textarea:focus, select:focus { border-color:#0984e3; box-shadow:0 0 8px rgba(9,132,227,0.3); outline:none; color:#000; }
+input:focus, textarea:focus { border-color:#0984e3; box-shadow:0 0 8px rgba(9,132,227,0.3); outline:none; color:#000; }
 textarea { min-height:120px; resize:vertical; }
 button.submit-btn { background:#0984e3; color:#fff; padding:16px; font-weight:700; width:100%; border:none; border-radius:10px; cursor:pointer; font-size:1.1rem; transition:0.3s all; }
 button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
-#otherProductDiv { display:none; }
 
 /* Toast */
 .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00b894; color:#fff; padding:12px 25px; border-radius:10px; font-weight:500; opacity:0; pointer-events:none; transition:opacity 0.5s; z-index:2000; }
@@ -82,10 +81,7 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 <div class="toast" id="toast">Message sent!</div>
 
 <script>
-function openSellerRegister(){
-  window.location.href = 'seller-register.html';
-}
-
+function openSellerRegister(){ window.location.href = 'seller-register.html'; }
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
@@ -94,7 +90,7 @@ function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='non
 const products=[
   { name:"Bricks", price:15, unit:"per unit", img:"brick.jpg", sellerNumber:"917977523959" },
   { name:"Cement", price:350, unit:"per bag", img:"cement.png", sellerNumber:"919224626208" },
-  { name:"Sand", price:50, unit:"per bag", img:"https://i.imgur.com/H4p6XvH.jpg", sellerNumber:"912250038969" },
+  { name:"Sand", price:50, unit:"per bag", img:"sand.jpg", sellerNumber:"912250038969" },
   { name:"Paint", price:500, unit:"per liter", img:"paint.webp", sellerNumber:"917977523962" }
 ];
 
@@ -110,14 +106,11 @@ function displayProducts(){
   });
 }
 
-function goToBuyerPage(name, price, sellerNumber){
-  window.location.href='buy.html?product='+encodeURIComponent(name)+'&price='+encodeURIComponent(price)+'&seller='+sellerNumber;
-}
-
+function goToBuyerPage(name, price, sellerNumber){ window.location.href='buy.html?product='+encodeURIComponent(name)+'&price='+encodeURIComponent(price)+'&seller='+sellerNumber; }
 function openHome(){ displayProducts(); }
 
 const sellerAccounts = {
-  "abhi": { name: "Abhishek Rao", number: "7977523959" },
+  "abhi": { name: "Abhishek putta", number: "8850535094" },
   "ram": { name: "Ram Traders", number: "9988776655" },
   "sita": { name: "Sita Builders", number: "9123456789" },
   "john": { name: "John Cement Supply", number: "9001122334" }
@@ -127,13 +120,7 @@ function checkSellerPassword(){
   closeSidebar();
   const password = prompt("Enter seller password:");
   if(!password) return;
-
-  if(sellerAccounts[password]){
-    const sellerInfo = sellerAccounts[password];
-    showSellForm(sellerInfo.name, sellerInfo.number);
-  } else {
-    alert("Incorrect password!");
-  }
+  if(sellerAccounts[password]){ const sellerInfo = sellerAccounts[password]; showSellForm(sellerInfo.name, sellerInfo.number); } else { alert("Incorrect password!"); }
 }
 
 function showSellForm(fixedName="", fixedNumber=""){
@@ -141,22 +128,8 @@ function showSellForm(fixedName="", fixedNumber=""){
     <h2>Sell Your Product</h2>
     <form id="sellForm">
       <div class="form-group">
-        <label for="category">Select Product</label>
-        <select id="category" required>
-          <option value="">Select</option>
-          <option>Bricks</option>
-          <option>Cement</option>
-          <option>Sand</option>
-          <option>Stone</option>
-          <option>Tile</option>
-          <option>Gypsum</option>
-          <option>Paint</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-group" id="otherProductDiv">
         <label for="productName">Product Name</label>
-        <input type="text" id="productName" placeholder="Enter product name">
+        <input type="text" id="productName" placeholder="Enter product name" required>
       </div>
       <div class="form-group">
         <label for="price">Price</label>
@@ -190,25 +163,9 @@ function showSellForm(fixedName="", fixedNumber=""){
     </form>
   `;
 
-  const categorySelect = document.getElementById('category');
-  const otherDiv = document.getElementById('otherProductDiv');
-
-  categorySelect.addEventListener('change', function(){
-    if(this.value === "Other"){
-      otherDiv.style.display = "block";
-      document.getElementById('productName').required = true;
-    } else {
-      otherDiv.style.display = "none";
-      document.getElementById('productName').required = false;
-      document.getElementById('productName').value = "";
-    }
-  });
-
   document.getElementById('sellForm').addEventListener('submit', function(e){
     e.preventDefault();
-    let productName = categorySelect.value;
-    if(productName === "Other") productName = document.getElementById('productName').value;
-
+    const productName = document.getElementById('productName').value;
     const price = document.getElementById('price').value;
     const minQty = document.getElementById('minQty').value;
     const deliveryCharge = document.getElementById('deliveryCharge').value;
@@ -228,7 +185,6 @@ function showSellForm(fixedName="", fixedNumber=""){
     setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
 
     document.getElementById('sellForm').reset();
-    otherDiv.style.display = "none";
   });
 }
 
