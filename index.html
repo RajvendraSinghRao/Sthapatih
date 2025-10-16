@@ -28,13 +28,13 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 .main { padding:40px 25px; margin-left:0; transition:margin-left 0.3s; }
 .main h2 { text-align:center; margin-bottom:50px; color:#0984e3; font-size:2rem; letter-spacing:1px; }
 
-/* Product Grid */
-.products { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:25px; }
-.product-card { background:#fff; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.12); padding:20px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s, box-shadow 0.3s; text-align:center; position:relative; overflow:hidden; }
-.product-card:hover { transform:translateY(-10px); box-shadow:0 16px 30px rgba(0,0,0,0.18); }
-.product-card img { max-width:100%; height:180px; object-fit:cover; border-radius:15px; margin-bottom:15px; transition: transform 0.3s; }
-.product-card:hover img { transform:scale(1.05); }
-.product-card h3 { margin-bottom:10px; color:#2d3436; font-size:1.25rem; font-weight:700; }
+/* Grid */
+.products, .categories { display:grid; grid-template-columns:repeat(2,1fr); gap:25px; }
+.product-card, .category-card { background:#fff; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.12); padding:20px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s, box-shadow 0.3s; text-align:center; position:relative; overflow:hidden; cursor:pointer; }
+.product-card:hover, .category-card:hover { transform:translateY(-10px); box-shadow:0 16px 30px rgba(0,0,0,0.18); }
+.product-card img, .category-card img { max-width:100%; height:180px; object-fit:cover; border-radius:15px; margin-bottom:15px; transition: transform 0.3s; }
+.product-card:hover img, .category-card:hover img { transform:scale(1.05); }
+.product-card h3, .category-card h3 { margin-bottom:10px; color:#2d3436; font-size:1.25rem; font-weight:700; }
 .product-card p { margin-bottom:15px; color:#636e72; font-weight:500; font-size:1rem; }
 .product-card button { padding:12px; background:#00b894; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:1rem; transition:background 0.3s, transform 0.2s; }
 .product-card button:hover { background:#019875; transform:scale(1.05); }
@@ -57,7 +57,7 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 .toast.show { opacity:1; }
 
 /* Responsive */
-@media(max-width:500px){ .main { padding:20px 10px; } .product-card img { height:150px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
+@media(max-width:800px){ .categories, .products { grid-template-columns:1fr; } .main { padding:20px 10px; } .product-card img, .category-card img { height:150px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
 </style>
 </head>
 <body>
@@ -75,7 +75,7 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 
 <div class="main" id="mainContent">
   <h2>Build Shop</h2>
-  <div class="products" id="productsContainer"></div>
+  <div class="categories" id="categoriesContainer"></div>
 </div>
 
 <div class="toast" id="toast">Message sent!</div>
@@ -87,15 +87,27 @@ const overlay = document.getElementById('overlay');
 function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
 function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='none'; }
 
-const products=[
-  { name:"Bricks", price:15, unit:"per unit", img:"brick.jpg", sellerNumber:"917977523959" },
-  { name:"Cement", price:350, unit:"per bag", img:"cement.png", sellerNumber:"919224626208" },
-  { name:"Sand", price:50, unit:"per bag", img:"sand.jpg", sellerNumber:"912250038969" },
-  { name:"Paint", price:500, unit:"per liter", img:"paint.webp", sellerNumber:"917977523962" }
+const categories=[
+  { name: 'Bricks', img:'brick.jpg', products:[{ name:"Bricks", price:15, unit:"per unit", sellerNumber:"917977523959" }]},
+  { name: 'Cement', img:'cement.png', products:[{ name:"Cement", price:350, unit:"per bag", sellerNumber:"919224626208" }]},
+  { name: 'Sand', img:'sand.jpg', products:[{ name:"Sand", price:50, unit:"per bag", sellerNumber:"912250038969" }]},
+  { name: 'Paint', img:'paint.webp', products:[{ name:"Paint", price:500, unit:"per liter", sellerNumber:"917977523962" }]}
 ];
 
-function displayProducts(){
+function displayCategories(){
   closeSidebar();
+  document.getElementById('mainContent').innerHTML='<h2>Build Shop</h2><div class="categories" id="categoriesContainer"></div>';
+  const container=document.getElementById('categoriesContainer');
+  categories.forEach(cat=>{
+    const card=document.createElement('div');
+    card.className='category-card';
+    card.innerHTML=`<img src="${cat.img}" alt="${cat.name}"><h3>${cat.name}</h3>`;
+    card.onclick=()=>displayProducts(cat.products);
+    container.appendChild(card);
+  });
+}
+
+function displayProducts(products){
   document.getElementById('mainContent').innerHTML='<h2>Build Shop</h2><div class="products" id="productsContainer"></div>';
   const container=document.getElementById('productsContainer');
   products.forEach(p=>{
@@ -107,7 +119,7 @@ function displayProducts(){
 }
 
 function goToBuyerPage(name, price, sellerNumber){ window.location.href='buy.html?product='+encodeURIComponent(name)+'&price='+encodeURIComponent(price)+'&seller='+sellerNumber; }
-function openHome(){ displayProducts(); }
+function openHome(){ displayCategories(); }
 
 const sellerAccounts = {
   "abhi": { name: "Abhishek putta", number: "8850535094" },
@@ -188,7 +200,7 @@ function showSellForm(fixedName="", fixedNumber=""){
   });
 }
 
-displayProducts();
+displayCategories();
 </script>
 
 </body>
