@@ -29,10 +29,10 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 .main h2 { text-align:center; margin-bottom:50px; color:#0984e3; font-size:2rem; letter-spacing:1px; }
 
 /* Grid */
-.products, .categories { display:grid; grid-template-columns:repeat(2,1fr); gap:25px; }
+.products, .categories { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
 .product-card, .category-card { background:#fff; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.12); padding:20px; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s, box-shadow 0.3s; text-align:center; position:relative; overflow:hidden; cursor:pointer; }
 .product-card:hover, .category-card:hover { transform:translateY(-10px); box-shadow:0 16px 30px rgba(0,0,0,0.18); }
-.product-card img, .category-card img { max-width:100%; height:180px; object-fit:cover; border-radius:15px; margin-bottom:15px; transition: transform 0.3s; }
+.product-card img, .category-card img { max-width:100%; height:160px; object-fit:cover; border-radius:15px; margin-bottom:15px; transition: transform 0.3s; }
 .product-card:hover img, .category-card:hover img { transform:scale(1.05); }
 .product-card h3, .category-card h3 { margin-bottom:10px; color:#2d3436; font-size:1.25rem; font-weight:700; }
 .product-card p { margin-bottom:15px; color:#636e72; font-weight:500; font-size:1rem; }
@@ -57,7 +57,8 @@ button.submit-btn:hover { background:#0652dd; transform:scale(1.02); }
 .toast.show { opacity:1; }
 
 /* Responsive */
-@media(max-width:800px){ .categories, .products { grid-template-columns:1fr; } .main { padding:20px 10px; } .product-card img, .category-card img { height:150px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
+@media(max-width:600px){ .categories, .products { grid-template-columns:repeat(2,1fr); gap:15px; } .product-card img, .category-card img { height:140px; } .main { padding:20px 10px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
+@media(max-width:400px){ .categories, .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-card img, .category-card img { height:120px; } }
 </style>
 </head>
 <body>
@@ -88,11 +89,22 @@ function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
 function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='none'; }
 
 const categories=[
-  { name: 'Bricks', img:'brick.jpg', products:[{ name: "Red Bricks", price: 15, unit: "per unit", img: "brick1.jpg", sellerNumber: "917977523959" },
-                                               { name: "AAC Block", price: 80, unit: "per unit", img: "brick2.jpg", sellerNumber: "918850535094" }]},
-  { name: 'Cement', img:'cement.png', products:[{ name:"Cement", price:350, unit:"per bag", sellerNumber:"919224626208" }]},
-  { name: 'Sand', img:'sand.jpg', products:[{ name:"Sand", price:50, unit:"per bag", sellerNumber:"912250038969" }]},
-  { name: 'Paint', img:'paint.webp', products:[{ name:"Paint", price:500, unit:"per liter", sellerNumber:"917977523962" }]}
+  { name: 'Bricks', img:'brick.jpg', products:[
+    { name:"Bricks Standard", price:15, unit:"per unit", img:"brick1.jpg", sellerNumber:"917977523959" },
+    { name:"Bricks Premium", price:20, unit:"per unit", img:"brick2.jpg", sellerNumber:"917977523960" }
+  ]},
+  { name: 'Cement', img:'cement.png', products:[
+    { name:"Cement 50kg", price:350, unit:"per bag", img:"cement1.png", sellerNumber:"919224626208" },
+    { name:"Cement 25kg", price:180, unit:"per bag", img:"cement2.png", sellerNumber:"919224626209" }
+  ]},
+  { name: 'Sand', img:'sand.jpg', products:[
+    { name:"Sand washen 40kg", price:350, unit:"per bag", img:"cement1.png", sellerNumber:"919224626208" },
+    { name:"Sand Local 40kg", price:180, unit:"per bag", img:"cement2.png", sellerNumber:"919224626209" }
+  ]},
+  { name: 'Paint', img:'paint.webp', products:[
+    { name:"Asain Paint 500ml", price:350, unit:"500ml", img:"cement1.png", sellerNumber:"919224626208" },
+    { name:"Birla Opus 1000ml", price:600, unit:"1000ml", img:"cement2.png", sellerNumber:"919224626209" }
+  ]}
 ];
 
 function displayCategories(){
@@ -122,83 +134,26 @@ function displayProducts(products){
 function goToBuyerPage(name, price, sellerNumber){ window.location.href='buy.html?product='+encodeURIComponent(name)+'&price='+encodeURIComponent(price)+'&seller='+sellerNumber; }
 function openHome(){ displayCategories(); }
 
-const sellerAccounts = {
-  "abhi": { name: "Abhishek putta", number: "8850535094" },
-  "ram": { name: "Ram Traders", number: "9988776655" },
-  "sita": { name: "Sita Builders", number: "9123456789" },
-  "john": { name: "John Cement Supply", number: "9001122334" }
-};
+const sellerAccounts = { "abhi": { name: "Abhishek putta", number: "8850535094" }, "ram": { name: "Ram Traders", number: "9988776655" }, "sita": { name: "Sita Builders", number: "9123456789" }, "john": { name: "John Cement Supply", number: "9001122334" } };
 
-function checkSellerPassword(){
-  closeSidebar();
-  const password = prompt("Enter seller password:");
-  if(!password) return;
-  if(sellerAccounts[password]){ const sellerInfo = sellerAccounts[password]; showSellForm(sellerInfo.name, sellerInfo.number); } else { alert("Incorrect password!"); }
-}
+function checkSellerPassword(){ closeSidebar(); const password = prompt("Enter seller password:"); if(!password) return; if(sellerAccounts[password]){ const sellerInfo = sellerAccounts[password]; showSellForm(sellerInfo.name, sellerInfo.number); } else { alert("Incorrect password!"); } }
 
 function showSellForm(fixedName="", fixedNumber=""){
   document.getElementById('mainContent').innerHTML = `
     <h2>Sell Your Product</h2>
     <form id="sellForm">
-      <div class="form-group">
-        <label for="productName">Product Name</label>
-        <input type="text" id="productName" placeholder="Enter product name" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Price</label>
-        <input type="number" id="price" placeholder="Enter price" required>
-      </div>
-      <div class="form-group">
-        <label for="minQty">Minimum Quantity</label>
-        <input type="number" id="minQty" placeholder="Enter minimum quantity" required>
-      </div>
-      <div class="form-group">
-        <label for="deliveryCharge">Delivery Charge per km</label>
-        <input type="number" id="deliveryCharge" placeholder="Enter delivery charge" required>
-      </div>
-      <div class="form-group">
-        <label for="sellerName">Seller Name</label>
-        <input type="text" id="sellerName" value="${fixedName}" ${fixedName ? "readonly" : ""} placeholder="Enter seller name" required>
-      </div>
-      <div class="form-group">
-        <label for="sellerContact">Contact</label>
-        <input type="tel" id="sellerContact" value="${fixedNumber || '7977523959'}" ${fixedNumber ? "readonly" : ""} placeholder="Enter contact number" required>
-      </div>
-      <div class="form-group">
-        <label for="shopAddress">Shop Address</label>
-        <textarea id="shopAddress" placeholder="Enter shop address" required></textarea>
-      </div>
-      <div class="form-group">
-        <label for="additionalDetails">Additional Details</label>
-        <textarea id="additionalDetails" placeholder="Enter any additional details"></textarea>
-      </div>
+      <div class="form-group"><label for="productName">Product Name</label><input type="text" id="productName" placeholder="Enter product name" required></div>
+      <div class="form-group"><label for="price">Price</label><input type="number" id="price" placeholder="Enter price" required></div>
+      <div class="form-group"><label for="minQty">Minimum Quantity</label><input type="number" id="minQty" placeholder="Enter minimum quantity" required></div>
+      <div class="form-group"><label for="deliveryCharge">Delivery Charge per km</label><input type="number" id="deliveryCharge" placeholder="Enter delivery charge" required></div>
+      <div class="form-group"><label for="sellerName">Seller Name</label><input type="text" id="sellerName" value="${fixedName}" ${fixedName ? "readonly" : ""} placeholder="Enter seller name" required></div>
+      <div class="form-group"><label for="sellerContact">Contact</label><input type="tel" id="sellerContact" value="${fixedNumber || '7977523959'}" ${fixedNumber ? "readonly" : ""} placeholder="Enter contact number" required></div>
+      <div class="form-group"><label for="shopAddress">Shop Address</label><textarea id="shopAddress" placeholder="Enter shop address" required></textarea></div>
+      <div class="form-group"><label for="additionalDetails">Additional Details</label><textarea id="additionalDetails" placeholder="Enter any additional details"></textarea></div>
       <button type="submit" class="submit-btn">Submit Product Details</button>
     </form>
   `;
-
-  document.getElementById('sellForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const productName = document.getElementById('productName').value;
-    const price = document.getElementById('price').value;
-    const minQty = document.getElementById('minQty').value;
-    const deliveryCharge = document.getElementById('deliveryCharge').value;
-    const sellerName = document.getElementById('sellerName').value;
-    const sellerContact = document.getElementById('sellerContact').value;
-    const shopAddress = document.getElementById('shopAddress').value;
-    const additionalDetails = document.getElementById('additionalDetails').value;
-
-    const message = `New Product Submission:\nProduct: ${productName}\nPrice: ${price}\nMin Qty: ${minQty}\nDelivery Charge/km: ${deliveryCharge}\nSeller Name: ${sellerName}\nContact: ${sellerContact}\nShop Address: ${shopAddress}\nDetails: ${additionalDetails}`;
-
-    const waNumber = "917977523959";
-    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
-
-    const toast = document.getElementById('toast');
-    toast.textContent = "Message sent!";
-    toast.classList.add('show');
-    setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
-
-    document.getElementById('sellForm').reset();
-  });
+  document.getElementById('sellForm').addEventListener('submit', function(e){ e.preventDefault(); const productName = document.getElementById('productName').value; const price = document.getElementById('price').value; const minQty = document.getElementById('minQty').value; const deliveryCharge = document.getElementById('deliveryCharge').value; const sellerName = document.getElementById('sellerName').value; const sellerContact = document.getElementById('sellerContact').value; const shopAddress = document.getElementById('shopAddress').value; const additionalDetails = document.getElementById('additionalDetails').value; const message = `New Product Submission:\nProduct: ${productName}\nPrice: ${price}\nMin Qty: ${minQty}\nDelivery Charge/km: ${deliveryCharge}\nSeller Name: ${sellerName}\nContact: ${sellerContact}\nShop Address: ${shopAddress}\nDetails: ${additionalDetails}`; const waNumber = "917977523959"; window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank"); const toast = document.getElementById('toast'); toast.textContent = "Message sent!"; toast.classList.add('show'); setTimeout(()=>{ toast.classList.remove('show'); }, 3000); document.getElementById('sellForm').reset(); });
 }
 
 displayCategories();
