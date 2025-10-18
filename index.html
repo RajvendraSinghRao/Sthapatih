@@ -133,7 +133,7 @@ const categories=[
 
 function displayCategories(){
   closeSidebar();
-  document.getElementById('mainContent').innerHTML='<h2>Build Shop</h2><div class="categories" id="categoriesContainer"></div>';
+  document.getElementById('mainContent').innerHTML='<h2>स्थपतिः</h2><div class="categories" id="categoriesContainer"></div>';
   const container=document.getElementById('categoriesContainer');
   categories.forEach(cat=>{
     const card=document.createElement('div');
@@ -145,7 +145,7 @@ function displayCategories(){
 }
 
 function displayProducts(products){
-  document.getElementById('mainContent').innerHTML='<h2>Build Shop</h2><div class="products" id="productsContainer"></div>';
+  document.getElementById('mainContent').innerHTML='<h2> स्थपतिः</h2><div class="products" id="productsContainer"></div>';
   const container=document.getElementById('productsContainer');
   products.forEach(p=>{
     const card=document.createElement('div');
