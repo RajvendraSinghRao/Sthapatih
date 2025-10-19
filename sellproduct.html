@@ -7,8 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7fa,#f0f2f5); color:#2d3436; padding:30px; }
-form { background:#fff; padding:40px 30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.15); max-width:700px; margin:0 auto; }
+body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7fa,#f0f2f5); color:#2d3436; overflow-x:hidden; transition: background 0.3s; padding:30px; }
+
+/* Hamburger & Sidebar */
+.hamburger { position: sticky; top: 20px; left:20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; background:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
+.hamburger:hover { transform: scale(1.2); }
+
+.sidebar { position: fixed; top:0; left:-280px; width:260px; height:100%; background: linear-gradient(180deg,#0984e3,#74b9ff); color:#fff; padding:80px 20px 20px 20px; transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; border-top-right-radius:15px; border-bottom-right-radius:15px; }
+.sidebar h2 { margin-bottom:30px; font-weight:700; text-align:center; color:#ffeaa7; }
+.sidebar button { padding:12px; margin-bottom:15px; background:rgba(255,255,255,0.2); border:none; color:#fff; font-size:16px; cursor:pointer; border-radius:8px; font-weight:500; display:flex; align-items:center; justify-content:flex-start; gap:10px; transition:background 0.3s, transform 0.2s; }
+.sidebar button:hover { background:rgba(255,255,255,0.35); transform:scale(1.02); }
+
+/* Overlay */
+.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); display:none; z-index:900; }
+
+/* Form */
+form { background:#fff; padding:40px 30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.15); max-width:700px; margin:50px auto; }
 .form-group { margin-bottom:20px; }
 label { display:block; margin-bottom:6px; color:#0984e3; font-weight:500; }
 input, textarea, select { width:100%; padding:14px 12px; border-radius:10px; border:1.5px solid #dfe6e9; font-size:1rem; }
@@ -18,9 +32,21 @@ button.submit-btn:hover { background:#0652dd; }
 
 .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00b894; color:#fff; padding:12px 25px; border-radius:10px; font-weight:500; opacity:0; pointer-events:none; transition:opacity 0.5s; z-index:2000; }
 .toast.show { opacity:1; }
+
+/* Responsive */
+@media(max-width:600px){ .hamburger { left:10px; } }
 </style>
 </head>
 <body>
+
+<div class="hamburger" onclick="openSidebar()">&#9776;</div>
+
+<div class="sidebar" id="sidebar">
+  <h2>स्थपतिः</h2>
+  <button onclick="goHome()">🏠 Home</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <h2 style="text-align:center; margin-bottom:30px; color:#0984e3;">Sell Your Product</h2>
 
@@ -67,16 +93,22 @@ button.submit-btn:hover { background:#0652dd; }
 <div class="toast" id="toast">Message sent!</div>
 
 <script>
+// Sidebar functions
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
+function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='none'; }
+function goHome(){ window.location.href='index.html'; }
+
 // get seller info from URL
 const urlParams = new URLSearchParams(window.location.search);
 const sellerNameParam = urlParams.get('name') || '';
 const sellerNumberParam = urlParams.get('number') || '';
 
 // populate seller info
-const sellerNameInput = document.getElementById('sellerName');
-const sellerNumberInput = document.getElementById('sellerContact');
-sellerNameInput.value = sellerNameParam;
-sellerNumberInput.value = sellerNumberParam;
+document.getElementById('sellerName').value = sellerNameParam;
+document.getElementById('sellerContact').value = sellerNumberParam;
 
 // populate category dropdown
 const categories=[
@@ -107,8 +139,8 @@ document.getElementById('sellForm').addEventListener('submit', function(e){
   const price = document.getElementById('price').value;
   const minQty = document.getElementById('minQty').value;
   const deliveryCharge = document.getElementById('deliveryCharge').value;
-  const sellerName = sellerNameInput.value;
-  const sellerContact = sellerNumberInput.value;
+  const sellerName = document.getElementById('sellerName').value;
+  const sellerContact = document.getElementById('sellerContact').value;
   const shopAddress = document.getElementById('shopAddress').value;
   const additionalDetails = document.getElementById('additionalDetails').value;
 
