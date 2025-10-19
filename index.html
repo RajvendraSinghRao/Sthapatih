@@ -8,20 +8,25 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7fa,#f0f2f5); color:#2d3436; overflow-x:hidden; transition: background 0.3s; }
+
 /* Hamburger & Sidebar */
 .hamburger, .profile-btn { position: sticky; top: 20px; font-size: 28px; cursor: pointer; z-index: 1002; color: #0984e3; transition: transform 0.2s; background:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
 .hamburger:hover, .profile-btn:hover { transform: scale(1.2); }
 .hamburger { left: 20px; }
 .profile-btn { position: fixed; right: 20px; top: 20px; }
+
 .sidebar { position: fixed; top:0; left:-280px; width:260px; height:100%; background: linear-gradient(180deg,#0984e3,#74b9ff); color:#fff; padding:80px 20px 20px 20px; transition:left 0.3s; z-index:1000; display:flex; flex-direction:column; border-top-right-radius:15px; border-bottom-right-radius:15px; }
 .sidebar h2 { margin-bottom:30px; font-weight:700; text-align:center; color:#ffeaa7; }
 .sidebar button { padding:12px; margin-bottom:15px; background:rgba(255,255,255,0.2); border:none; color:#fff; font-size:16px; cursor:pointer; border-radius:8px; font-weight:500; display:flex; align-items:center; justify-content:flex-start; gap:10px; transition:background 0.3s, transform 0.2s; }
 .sidebar button:hover { background:rgba(255,255,255,0.35); transform:scale(1.02); }
+
 /* Overlay */
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); display:none; z-index:900; }
+
 /* Main content */
 .main { padding:40px 25px; margin-left:0; transition:margin-left 0.3s; }
 .main h2 { text-align:center; margin-bottom:50px; color:#0984e3; font-size:2rem; letter-spacing:1px; }
+
 /* Grid */
 .categories { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
 .category-card { background:#fff; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.12); padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:transform 0.3s, box-shadow 0.3s; text-align:center; cursor:pointer; }
@@ -29,9 +34,11 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 .category-card img { max-width:100%; height:160px; object-fit:cover; border-radius:15px; margin-bottom:15px; transition: transform 0.3s; }
 .category-card:hover img { transform:scale(1.05); }
 .category-card h3 { margin-bottom:10px; color:#2d3436; font-size:1.25rem; font-weight:700; }
+
 /* Toast */
 .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#00b894; color:#fff; padding:12px 25px; border-radius:10px; font-weight:500; opacity:0; pointer-events:none; transition:opacity 0.5s; z-index:2000; }
 .toast.show { opacity:1; }
+
 /* Responsive */
 @media(max-width:600px){ .categories { grid-template-columns:repeat(2,1fr); gap:15px; } .main { padding:20px 10px; } .hamburger { left:10px; } .profile-btn{right:10px;} }
 @media(max-width:400px){ .categories { grid-template-columns:repeat(2,1fr); gap:10px; } }
@@ -58,11 +65,13 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 <div class="toast" id="toast">Message sent!</div>
 
 <script>
-function openSellerRegister(){ window.location.href = 'seller-register.html'; }
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
+
 function openSidebar(){ sidebar.style.left='0'; overlay.style.display='block'; }
 function closeSidebar(){ sidebar.style.left='-280px'; overlay.style.display='none'; }
+
+function openSellerRegister(){ window.location.href='seller-register.html'; }
 
 const categories=[
   { name: 'Bricks And AAC Blocks', img:'brick.png' },
@@ -90,14 +99,21 @@ function displayCategories(){
   });
 }
 
-const sellerAccounts = { "abhi": true, "ram": true, "sita": true, "john": true };
+const sellerAccounts = { 
+  "abhi": { name: "Abhishek putta", number: "8850535094" },
+  "ram": { name: "Ram Traders", number: "9988776655" },
+  "sita": { name: "Sita Builders", number: "9123456789" },
+  "john": { name: "John Cement Supply", number: "9001122334" } 
+};
 
 function checkSellerPassword(){ 
   closeSidebar(); 
   const password = prompt("Enter seller password:"); 
   if(!password) return; 
   if(sellerAccounts[password]){
-    window.location.href='sellproduct.html'; // redirect to separate sell product page
+    const sellerInfo = sellerAccounts[password];
+    const url = `sellproduct.html?name=${encodeURIComponent(sellerInfo.name)}&number=${encodeURIComponent(sellerInfo.number)}`;
+    window.location.href = url;
   } else { 
     alert("Incorrect password!"); 
   } 
