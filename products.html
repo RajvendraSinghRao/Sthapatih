@@ -53,7 +53,6 @@ body { font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#e0f7
 <div class="sidebar" id="sidebar">
   <h2>स्थपतिः</h2>
   <button onclick="goHome()">🏠 Home</button>
-  <button onclick="window.location.href='sellproduct.html'">🛒 Sell Product</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -120,7 +119,6 @@ function goToBuyerPage(name, price, sellerNumber){
 
 function goHome(){ window.location.href='index.html'; }
 
-// Initialize page
 const categoryName = getCategoryFromURL();
 if(categoryName){ displayProducts(categoryName); } else { document.getElementById('productsContainer').innerHTML='<p>No category selected!</p>'; }
 </script>
